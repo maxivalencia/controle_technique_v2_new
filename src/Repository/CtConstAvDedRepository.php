@@ -72,13 +72,28 @@ class CtConstAvDedRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('c')
             ->andWhere('c.ct_centre_id = :val1')
             ->andWhere('c.cad_created LIKE :val2')
-            ->andWhere('c.rcp_is_active = :val3')
+            ->andWhere('c.cad_is_active = :val3')
             ->setParameter('val1', $centre)
             ->setParameter('val2', '%'.$date->format('Y-m-d').'%')
             ->setParameter('val3', 1)
             ->orderBy('c.id', 'ASC')
             ->getQuery()
             ->getResult()
+        ;
+    }
+
+    public function findNombreConstatation($date): ?int
+    {
+        return $this->createQueryBuilder('c')
+            ->select('COUNT(c) ')
+            ->andWhere('c.cad_created LIKE :val1')
+            ->andWhere('c.cad_is_active = :val2')
+            ->setParameter('val1', '%'.$date->format("Y-m-d").'%')
+            ->setParameter('val2', 1)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleScalarResult()
+            //->getOneOrNullResult()
         ;
     }
 

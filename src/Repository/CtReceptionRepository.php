@@ -83,4 +83,19 @@ class CtReceptionRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
+    public function findNombreReception($date): ?int
+    {
+        return $this->createQueryBuilder('c')
+            ->select('COUNT(c) ')
+            ->andWhere('c.rcp_created LIKE :val1')
+            ->andWhere('c.rcp_is_active = :val2')
+            ->setParameter('val1', '%'.$date->format("Y-m-d").'%')
+            ->setParameter('val2', 1)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleScalarResult()
+            //->getOneOrNullResult()
+        ;
+    }
 }

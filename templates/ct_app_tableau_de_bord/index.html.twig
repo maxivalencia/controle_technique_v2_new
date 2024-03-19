@@ -4,68 +4,250 @@
 
 {% block app_ct %}
 <div class="box fond_tableau_de_bord">
-    <div class="box-header">STATISTIQUE GENERALE</div>
+    <div class="box-header">RECAPITULATION GENERALE</div>
     <br>
     <div class="box-body">
-        <div class="col-lg-3 col-xs-6">
-            <div class="small-box bg-aqua">
-                <div class="inner">
-                    <h3>899</h3>
-                    <p>Visite technique</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-settings"></i>
+        <div class="card bg-gradient-info">
+            <div class="card-header border-0">
+                <h3 class="card-title">
+                    <i class="fas fa-th mr-1"></i>
+                    Visite technique
+                </h3>
+
+                <div class="card-tools">
+                    <button type="button" class="btn bg-info btn-sm" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn bg-info btn-sm" data-card-widget="remove">
+                    <i class="fas fa-times"></i>
+                    </button>
                 </div>
             </div>
-        </div>
-
-        <div class="col-lg-3 col-xs-6">
-            <div class="small-box bg-green">
-                <div class="inner">
-                    <h3>133</h3>
-                    <p>Réception</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-archive"></i>
-                </div>
+            <div class="card-body">
+                <canvas class="visite-chart" id="visite-chart"></canvas>
             </div>
         </div>
+        <div class="card bg-gradient-info">
+            <div class="card-header border-0">
+                <h3 class="card-title">
+                    <i class="fas fa-th mr-1"></i>
+                    Réception technique
+                </h3>
 
-        <div class="col-lg-3 col-xs-6">
-            <div class="small-box bg-gray">
-                <div class="inner">
-                    <h3>50</h3>
-                    <p>Carte grise</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-card"></i>
+                <div class="card-tools">
+                    <button type="button" class="btn bg-info btn-sm" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn bg-info btn-sm" data-card-widget="remove">
+                    <i class="fas fa-times"></i>
+                    </button>
                 </div>
             </div>
-        </div>
-
-        <div class="col-lg-3 col-xs-6">
-            <div class="small-box bg-red">
-                <div class="inner">
-                    <h3>40</h3>
-                    <p>Contre visite</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-clipboard"></i>
-                </div>
+            <div class="card-body">
+                <canvas class="reception-chart" id="reception-chart"></canvas>
             </div>
         </div>
+        <div class="card bg-gradient-info">
+            <div class="card-header border-0">
+                <h3 class="card-title">
+                    <i class="fas fa-th mr-1"></i>
+                    Constatation Avant Dédouanement
+                </h3>
 
-        <div class="col-lg-3 col-xs-6">
-            <div class="small-box bg-yellow">
-                <div class="inner">
-                    <h3>20</h3>
-                    <p>Constatation avant dédouanement</p>
+                <div class="card-tools">
+                    <button type="button" class="btn bg-info btn-sm" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn bg-info btn-sm" data-card-widget="remove">
+                    <i class="fas fa-times"></i>
+                    </button>
                 </div>
-                <div class="icon">
-                    <i class="ion ion-clipboard"></i>
-                </div>
+            </div>
+            <div class="card-body">
+                <canvas class="constatation-chart" id="constatation-chart"></canvas>
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+        $(function () {
+            'use strict'
+        
+            var ticksStyle = {
+                fontColor: '#495057',
+                fontStyle: 'bold'
+            }
+        
+            var mode = 'index'
+            var intersect = true
+
+            var $visiteChart = $('#visite-chart')
+            // eslint-disable-next-line no-unused-vars
+            var visiteChart = new Chart($visiteChart, {
+                data: {
+                    labels: [{% for jour in jours %}'{{ jour }}',{% endfor %}],
+                    datasets: [{
+                    type: 'line',
+                    data: [{% for nombre_visite in nombre_visites %}{{ nombre_visite }},{% endfor %}],
+                    backgroundColor: 'transparent',
+                    borderColor: '#ffffff',
+                    pointBorderColor: '#000000',
+                    pointBackgroundColor: '#007bff',
+                    fill: false
+                    // pointHoverBackgroundColor: '#007bff',
+                    // pointHoverBorderColor    : '#007bff'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    tooltips: {
+                    mode: mode,
+                    intersect: intersect
+                    },
+                    hover: {
+                    mode: mode,
+                    intersect: intersect
+                    },
+                    legend: {
+                    display: false
+                    },
+                    scales: {
+                    yAxes: [{
+                        // display: false,
+                        gridLines: {
+                        display: true,
+                        lineWidth: '4px',
+                        color: 'rgba(0, 0, 0, .2)',
+                        zeroLineColor: 'transparent'
+                        },
+                        ticks: $.extend({
+                        beginAtZero: true,
+                        //suggestedMax: 200
+                        }, ticksStyle)
+                    }],
+                    xAxes: [{
+                        display: true,
+                        gridLines: {
+                        display: false
+                        },
+                        ticks: ticksStyle
+                    }]
+                    }
+                }
+            })
+
+            var $receptionChart = $('#reception-chart')
+            // eslint-disable-next-line no-unused-vars
+            var receptionChart = new Chart($receptionChart, {
+                data: {
+                    labels: [{% for jour in jours %}'{{ jour }}',{% endfor %}],
+                    datasets: [{
+                    type: 'line',
+                    data: [{% for nombre_reception in nombre_receptions %}{{ nombre_reception }},{% endfor %}],
+                    backgroundColor: 'transparent',
+                    borderColor: '#ffffff',
+                    pointBorderColor: '#000000',
+                    pointBackgroundColor: '#007bff',
+                    fill: false
+                    // pointHoverBackgroundColor: '#007bff',
+                    // pointHoverBorderColor    : '#007bff'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    tooltips: {
+                    mode: mode,
+                    intersect: intersect
+                    },
+                    hover: {
+                    mode: mode,
+                    intersect: intersect
+                    },
+                    legend: {
+                    display: false
+                    },
+                    scales: {
+                    yAxes: [{
+                        // display: false,
+                        gridLines: {
+                        display: true,
+                        lineWidth: '4px',
+                        color: 'rgba(0, 0, 0, .2)',
+                        zeroLineColor: 'transparent'
+                        },
+                        ticks: $.extend({
+                        beginAtZero: true,
+                        //suggestedMax: 200
+                        }, ticksStyle)
+                    }],
+                    xAxes: [{
+                        display: true,
+                        gridLines: {
+                        display: false
+                        },
+                        ticks: ticksStyle
+                    }]
+                    }
+                }
+            })
+
+            var $constatationChart = $('#constatation-chart')
+            // eslint-disable-next-line no-unused-vars
+            var constatationChart = new Chart($constatationChart, {
+                data: {
+                    labels: [{% for jour in jours %}'{{ jour }}',{% endfor %}],
+                    datasets: [{
+                    type: 'line',
+                    data: [{% for nombre_constatation in nombre_constatations %}{{ nombre_constatation }},{% endfor %}],
+                    backgroundColor: 'transparent',
+                    borderColor: '#ffffff',
+                    pointBorderColor: '#000000',
+                    pointBackgroundColor: '#007bff',
+                    fill: false
+                    // pointHoverBackgroundColor: '#007bff',
+                    // pointHoverBorderColor    : '#007bff'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    tooltips: {
+                    mode: mode,
+                    intersect: intersect
+                    },
+                    hover: {
+                    mode: mode,
+                    intersect: intersect
+                    },
+                    legend: {
+                    display: false
+                    },
+                    scales: {
+                    yAxes: [{
+                        // display: false,
+                        gridLines: {
+                        display: true,
+                        lineWidth: '4px',
+                        color: 'rgba(0, 0, 0, .2)',
+                        zeroLineColor: 'transparent'
+                        },
+                        ticks: $.extend({
+                        beginAtZero: true,
+                        //suggestedMax: 200
+                        }, ticksStyle)
+                    }],
+                    xAxes: [{
+                        display: true,
+                        gridLines: {
+                        display: false
+                        },
+                        ticks: ticksStyle
+                    }]
+                    }
+                }
+            })
+        })
+    </script>
+{% endblock %}
+
