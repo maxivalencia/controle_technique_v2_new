@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Type Visite{% endblock %}
+
+{% block app_ct %}
+<div class="box">
+    <div class="box-header">TYPE VISITE</div><br>
+
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Id</th>
+                    <td>{{ ct_type_visite.id }}</td>
+                </tr>
+                <tr>
+                    <th>libellé</th>
+                    <td>{{ ct_type_visite.tpvLibelle }}</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <table class="table" style="width:450px;">
+            <tbody>
+                <tr>
+                    <td style="width:150px;">
+                        <a href="{{ path('app_ct_app_visite_liste_type') }}" class="btn btn-primary"><i class="fa fa-arrow-left" aria-hidden="true"></i> Retour</a>
+                    </td>
+                    <td style="width:150px;">
+                        <a href="{{ path('app_ct_app_visite_edit_type', {'id': ct_type_visite.id}) }}" class="btn btn-success"><i class="fa fa-book" aria-hidden="true"></i> Modifier</a>
+                    </td>
+                    <td style="width:150px;">
+                        <a href="{{ path('app_ct_app_visite_del_type', {'id': ct_type_visite.id}) }}" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i> Supprimer</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

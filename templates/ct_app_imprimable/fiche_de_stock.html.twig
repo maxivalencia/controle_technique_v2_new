@@ -1,0 +1,164 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Fiche de stock</title>
+        <style>
+            html{margin:20px 20px 20px 20px;}
+            .footer{
+                position:fixed;
+                bottom:10px;
+                left:0px;
+                right:40px;
+                height:20px;
+                align:center;
+
+                /** Extra personal styles **/
+                width: 100%;
+                /* background-color: #03a9f4; */
+                color: black;
+                margin-right: 20px;
+                text-align: center;
+                line-height: 20px;
+            }
+            .footer .page-number:after { content: counter(page); }
+        </style>
+    </head>
+    <body style="font-size:10px;border:0px solid black;">
+        <div>
+            <table style="font-size:10px">
+                <tr>
+                    <td width="200" align="center" style="line-height:1em;">
+                        <strong>DIRECTION GENERALE DE LA SECURITE ROUTIERE</strong>
+                        <br>-----------------------------<br>
+                        <strong>DIRECTION DES OPERATIONS ROUTIERE</strong>
+                        <br>-----------------------------<br>
+                        <strong>
+                            CENTRE DE SECURITE ROUTIERE<br>
+                            {{ centre }} - {{ province }}
+                        </strong>
+                        <br>-----------------------------<br>
+                        {# <img src="{{ logo }}" alt="logo" width="50px" height="50px" type="images/png"> #}
+                        <img src="{{ logo }}" alt="logo" width="25px" height="25px" type="images/png">
+                        <br>« LAHITOKANA NY AINA » 
+                    </td>
+                    <td width="150" align="center" valign="bottom" style="font-size:12px;">
+                        <div align="center">
+                            <strong>
+                                {# ANNEXE IV<br>
+                                ---------------- #}
+                            </strong>
+                        </div>
+                    </td>
+                    <td width="200" align="center" valign="top" style="font-size:12px;">
+                        {% set trans_day_hash = { 
+                                "January": "Janvier", 
+                                "February": "Février", 
+                                "March": "Mars", 
+                                "April": "Avril", 
+                                "May": "Mai", 
+                                "June": "Juin", 
+                                "July": "Juillet",
+                                "August": "Août",
+                                "September": "Septembre",
+                                "October": "Octobre",
+                                "November": "Novembre",
+                                "December": "Décembre" 
+                            } 
+                        %}
+                        <strong>REPOBLIKAN’I MADAGASIKARA</strong><br>
+                        <i>Fitiavana - Tanindrazana - Fandrosoana</i>
+                        <br>--------------------------<br><br>
+                        {{ province }}, le {{ "now"|date('d') }} {{ trans_day_hash["now"|date('F')] }} {{ "now"|date('Y') }}
+                        <br><br>--------------------------<br><br>
+                    </td>
+                </tr>
+            </table>
+            <br><br>
+            <div align="center">
+                <table width="600" style="font-size:16px;border:0px solid black;" align="center">
+                    <tr align="center">
+                        <td align="center">
+                            <strong>
+                                <u>SITUATION MENSUELLE DES IMPRIMES TECHNIQUES MOIS DE {{ trans_day_hash[date_stock|date('F')]|upper }} {{ date_stock|date('Y') }}</u>
+                            </strong>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br><br><br>
+            <br>
+            <table align="center" style="border: 2px solid black;border-collapse: collapse;font-size:10px;">
+                <tr align="center">
+                    <td valign="middle" align="center" rowspan="3" width="30" style="border: 1px solid black;border-collapse: collapse;"><strong>N°</strong></td>
+                    <td valign="middle" align="center" rowspan="3" width="100" style="border: 1px solid black;border-collapse: collapse;"><strong>NATURE DES IMPRIMES TECHNIQUES</strong></td>
+                    <td valign="middle" align="center" rowspan="3" width="40" style="border: 1px solid black;border-collapse: collapse;"><strong>Existant au 1er jour du mois<br><br>(A)</strong></td>
+                    <td valign="middle" align="center" rowspan="3" width="40" style="border: 1px solid black;border-collapse: collapse;"><strong>Reçu au cours du mois<br><br>(B)</strong></td>
+                    <td valign="middle" align="center" rowspan="3" width="40" style="border: 1px solid black;border-collapse: collapse;"><strong>TOTAL (A+B)<br><br>(C)</strong></td>
+                    <td valign="middle" align="center" colspan="4" width="80" style="border: 1px solid black;border-collapse: collapse;"><strong>Nombre consommés</strong></td>
+                    <td valign="middle" align="center" rowspan="3" width="40" style="border: 1px solid black;border-collapse: collapse;"><strong>Stocks à la fin du mois (C-D4)<br><br>(E)</strong></td>
+                    <td valign="middle" align="center" rowspan="3" width="75" style="border: 1px solid black;border-collapse: collapse;"><strong>Observation</strong></td>
+                </tr>
+                <tr align="center">
+                    <td valign="middle" align="center" width="40" style="border: 1px solid black;border-collapse: collapse;"><strong>Vendus<br>(D1)</strong></td>
+                    <td valign="middle" align="center" width="40" style="border: 1px solid black;border-collapse: collapse;"><strong>Adm<br>(D2)</strong></td>
+                    <td valign="middle" align="center" width="40" style="border: 1px solid black;border-collapse: collapse;"><strong>Rebuts<br>(D3)</strong></td>
+                    <td valign="middle" align="center" width="40" style="border: 1px solid black;border-collapse: collapse;"><strong>Total<br>(D1+D2+D3)<br>(D4)</strong></td>
+                </tr>
+                <tr align="center">
+                    <td valign="middle" align="center" colspan="4" width="80" style="border: 1px solid black;border-collapse: collapse;"><strong>(D)</strong></td>
+                </tr>
+                {% for ct_stock in ct_stocks %}
+                    <tr style="font-size:12px;">
+                        <td align="center" style="border: 1px solid black;border-collapse: collapse;">{{ ct_stock.numero }}</td>
+                        <td align="left" style="border: 1px solid black;border-collapse: collapse;">{{ ct_stock.nature }}</td>
+                        <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_stock.existant }}</td>
+                        <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_stock.recu }}</td>
+                        <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_stock.total }}</td>
+                        <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_stock.vendus }}</td>
+                        <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_stock.adm }}</td>
+                        <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_stock.rebut }}</td>
+                        <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_stock.total_consomme }}</td>
+                        <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_stock.stocks }}</td>
+                        <td align="left" style="border: 1px solid black;border-collapse: collapse;">{{ ct_stock.observation }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="11">Aucune visite trouvé</td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <div style="font-size:14px;margin-left:400px;" align="center">
+                <br><br>
+                {{ province }}, le {{ "now"|date('d') }} {{ trans_day_hash["now"|date('F')] }} {{ "now"|date('Y') }}<br>
+                <strong>Le chef de Centre<strong>
+            </div>
+            <div class="footer">
+                {# <span>Direction Générale de la Sécurité Routière BP 784 Alarobia Antananarivo NIF : 4001 089525 STAT : 71102 11 2006 0 043 19</span> #}
+                <script type="text/php">
+                    if ( isset($pdf) ) {
+                        // OLD 
+                        // $font = Font_Metrics::get_font("helvetica", "bold");
+                        // $pdf->page_text(72, 18, "{PAGE_NUM} of {PAGE_COUNT}", $font, 6, array(255,0,0));
+                        // v.0.7.0 and greater
+                        $x = 750;
+                        $y = 575;
+                        $text = "page : {PAGE_NUM} sur {PAGE_COUNT}";
+                        $font = $fontMetrics->get_font("helvetica", "bold");
+                        $size = 8;
+                        $color = array(0, 0, 0);
+                        $word_space = 0.0;  //  default
+                        $char_space = 0.0;  //  default
+                        $angle = 0.0;   //  default
+                        $pdf->page_text($x, $y, $text, $font, $size, $color, $word_space, $char_space, $angle);
+                    
+                        $x2 = 40;
+                        $y2 = 800;
+                        $text2 = "Editée le {{ "now"|date('d') }} {{ trans_day_hash["now"|date('F')] }} {{ "now"|date('Y') }} à {{ "now"|date('H') }}:{{ "now"|date('m') }}:{{ "now"|date('s') }} par {{ user.usrNom }}"; 
+                        $pdf->page_text($x2, $y2, $text2, $font, $size, $color, $word_space, $char_space, $angle);
+                    }
+                </script>
+            </div>
+        </div>
+    </body>
+</html>

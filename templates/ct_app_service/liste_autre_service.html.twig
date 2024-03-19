@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste Autre service{% endblock %}
+
+{% block app_ct %}
+
+<div class="box">
+    <div class="box-header">TOTAL AUTRE SERVICE : {{ total }}</div><br>
+    <div>
+        <div>
+            <a href="{{ path('app_ct_app_new_service') }}" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i> Créer autre service</a>
+        </div>
+        <div class="marge-elts">
+            <table class="table liste">
+                <thead>
+                    <tr>
+                        <th>Numéro de controle</th>
+                        <th>Emploi</th>
+                        <th>Immatriculation</th>
+                        <th>Imprimé technique</th>
+                        <th>Secretaire</th>
+                        <th>Verificateur</th>
+                        <th>Validité</th>
+                        <th>Itinéraire</th>
+                        <th>Utilisation</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for ct_autre_service in ct_autre_services %}
+                    <tr>
+                        <td>{{ ct_autre_service.controleId }}</td>
+                        <td>{{ ct_autre_service.ctUsageIt }}</td>
+                        <td>{{ ct_autre_service.ctCarteGriseId }}</td>
+                        <td>
+                            {% for auv_extra in ct_autre_service.auvExtra %}
+                                {{ auv_extra.vsteLibelle }}<br>
+                            {% endfor %}
+                        </td>
+                        <td>{{ ct_autre_service.userId }}</td>
+                        <td>{{ ct_autre_service.verificateurId }}</td>
+                        <td>{{ ct_autre_service.auvValidite }}</td>
+                        <td>{{ ct_autre_service.auvItineraire }}</td>
+                        <td>{{ ct_autre_service.ctUtilisationId }}</td>
+                        <td>
+                            <a href="#" class="btn btn-success"><i class="fa fa-book" aria-hidden="true"></i></a>
+                            <a href="#" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="3">Aucun enregistrement trouvé</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <a href="{{ path('app_ct_app_new_service') }}" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i> Créer autre service</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

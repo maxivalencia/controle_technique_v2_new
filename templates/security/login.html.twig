@@ -1,0 +1,57 @@
+{% extends 'base_2.html.twig' %}
+
+{% block title %}Connexion !{% endblock %}
+
+{% block body %}
+<form method="post">
+    {% if error %}
+        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+
+    {% if app.user %}
+        <div class="mb-3">
+            Vous êtes connecté sur le compte de {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+        </div>
+    {% endif %}
+
+    <div class="login_center filigrane">
+        <div style="text-align:center;">
+            <img src="/image/logo_dgsr.png" style="width:150px;text-align:center;margin-top=-75px;padding-top=-75px;" class="image-login">
+        </div>
+        <br><br><br><br>
+        <div  style="background-color:#000000;">
+            <H1 class="h3 mb-3 font-weight-normal" style="text-align:center;color:white;font-size:16px;">Accès Contrôle Technique V2.0</H1>
+        </div>
+        {# <label for="inputUsername">Nom d'utilisateur : </label> #}
+        {# <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" autocomplete="username" required autofocus> #}
+        <input type="text" class="form-control" placeholder="Nom d'utilisateur" name="username" value="" id="inputUsername" autocomplete="username" required autofocus style="margin-left:auto;margin-right:auto;width:400px;">
+        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+        <br><br>
+        {# <label for="inputPassword">Mots de passe : </label> #}
+        {# <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required> #}
+        <input type="password" class="form-control" placeholder="Mot de passe" name="password" id="inputPassword" autocomplete="current-password" required style="margin-left:auto;margin-right:auto;width:400px;margin-top:-35px">
+        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        <br>
+        <input type="hidden" name="_csrf_token"
+            value="{{ csrf_token('authenticate') }}"
+        >
+
+        {#
+            Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+            See https://symfony.com/doc/current/security/remember_me.html
+
+            <div class="checkbox mb-3">
+                <label>
+                    <input type="checkbox" name="_remember_me"> Remember me
+                </label>
+            </div>
+        #}
+
+        <button class="btn btn-primary" type="submit" {# style="float:right" #} class="button-login" style="margin-left:auto;margin-right:auto;width:380px;font-size:28px;text-align:center;transform:translate(16%, 50%);border-color:#808080;background-color:#0cc2dd;">
+            connexion
+        </button>
+        {# <button type="submit" class="btn btn-primary btn-block btn-flat" id="login-form-submit">Connexion</button>
+        </div> #}
+    </div>
+</form>
+{% endblock %}

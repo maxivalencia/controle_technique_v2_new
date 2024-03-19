@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des imprimés utilisés{% endblock %}
+
+{% block app_ct %}
+<div class="box">
+    <div class="box-header">IMPRIME UTILISER</div><br>
+</div>
+<table class="table" style="width:100%;">
+    <tbody>
+        <tr>
+            <td style="width:50%;">
+                <div class="box">
+                    <div class="entete-formulaire">Feuille d'utilisation</div><br>
+                    <div>
+                        {{ form_start(form_feuille_utilisation) }}
+                            {{ form_row(form_feuille_utilisation.date) }}
+                            {{ form_row(form_feuille_utilisation.ct_centre_id) }}
+                            <button class="btn btn-success" type="submit" formaction="{{ path('app_ct_app_imprimable_feuille_utilisation') }}">
+                                Générer
+                            </button>
+                        {{ form_end(form_feuille_utilisation) }}
+                    </div>
+                </div>
+            </td>
+            <td style="width:50%;">
+                <div class="box">
+                    <div class="entete-formulaire">Fiche de stock</div><br>
+                    <div>
+                        {{ form_start(form_situation_de_stock) }}
+                            {{ form_row(form_situation_de_stock.date) }}
+                            {{ form_row(form_situation_de_stock.ct_centre_id) }}
+                            <button class="btn btn-success" type="submit" formaction="{{ path('app_ct_app_imprimable_fiche_de_stock') }}">
+                                Générer
+                            </button>
+                        {{ form_end(form_situation_de_stock) }}
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<div class="box">
+    <table>
+        <tr>
+            <td>
+                <a href="{{ path('app_ct_app_imprime_technique_liste_utiliser') }}" class="btn btn-success"><i class="fa fa-success" aria-hidden="true"></i> Retour à la recherche</a>
+            </td>
+            <td>
+                <a href="{{ path('app_ct_app_imprime_technique_mise_a_jour_multiple') }}" class="btn btn-success"><i class="fa fa-success" aria-hidden="true"></i> Retour à l'ajout multiple</a>
+            </td>
+            <td>
+                <a href="{{ path('app_ct_app_imprime_technique_liste_non_utiliser') }}" class="btn btn-success"><i class="fa fa-success" aria-hidden="true"></i> Listes des non utilisés</a>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="box">
+    <div class="entete-formulaire">Liste des imprimés dans le bordereau</div><br>
+    <div>
+        <div class="marge-elts">
+            <table class="table liste">
+                <thead>
+                    <tr>
+                        <th>N° controle / N° enregistrement</th>
+                        <th>N° IT</th>
+                        <th>IT</th>
+                        <th>Motif utilisation</th>
+                        <th>actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for ct_imprime_tech_use in ct_imprime_tech_uses %}
+                    <tr>
+                        <td>{{ ct_imprime_tech_use.ctControleId }}</td>
+                        <td>{{ ct_imprime_tech_use.ituNumero }}</td>
+                        <td>{{ ct_imprime_tech_use.ct_imprime_tech_id }}</td>
+                        <td>{{ ct_imprime_tech_use.ct_usage_it_id }}</td>
+                        <td>
+                            <a href="{{ path('app_ct_imprime_tech_use_show', {'id': ct_imprime_tech_use.id}) }}" class="btn btn-success"><i class="fa fa-book" aria-hidden="true"></i></a>
+                            {# <a href="{{ path('app_ct_imprime_tech_use_edit', {'id': ct_imprime_tech_use.id}) }}" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i></a> #}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5">Aucun enregistrement trouvé</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

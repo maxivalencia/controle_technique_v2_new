@@ -1,0 +1,49 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+parameters:
+    locale: fr
+    logo: '%kernel.project_dir%/public/image/'
+    dossier_visite_premiere: '%kernel.project_dir%/public/generated/pv/visite/premiere/'
+    dossier_visite_contre: '%kernel.project_dir%/public/generated/pv/visite/contre/'
+    dossier_reception_isole: '%kernel.project_dir%/public/generated/pv/reception/isole/'
+    dossier_reception_par_type: '%kernel.project_dir%/public/generated/pv/reception/par_type/'
+    dossier_constatation: '%kernel.project_dir%/public/generated/pv/constatation/'
+    dossier_feuille_de_caisse_visite: '%kernel.project_dir%/public/generated/feuille_de_caisse/visite/'
+    dossier_feuille_de_caisse_reception: '%kernel.project_dir%/public/generated/feuille_de_caisse/reception/'
+    dossier_feuille_de_caisse_constatation: '%kernel.project_dir%/public/generated/feuille_de_caisse/constatation/'
+    dossier_fiche_de_controle_reception: '%kernel.project_dir%/public/generated/fiche_de_controle/reception'
+    dossier_fiche_de_controle_constatation: '%kernel.project_dir%/public/generated/fiche_de_controle/constatation/'
+    dossier_fiche_verificateur: '%kernel.project_dir%/public/generated/fiche_verificateur/'
+    dossier_liste_anomalie: '%kernel.project_dir%/public/generated/liste_anomalie/'
+    dossier_caracteristique: '%kernel.project_dir%/public/generated/caracteristique/carte_grise/'
+    dossier_feuille_utilisation_imprime_technique: '%kernel.project_dir%/public/generated/feuille_utilisation_imprime_technique/'
+    dossier_bordereau_envoi: '%kernel.project_dir%/public/generated/bordereau_envoi/'
+    dossier_visite_speciale: '%kernel.project_dir%/public/generated/visite_speciale/'
+    dossier_authenticite: '%kernel.project_dir%/public/generated/authenticite/'
+    dossier_fiche_de_stock: '%kernel.project_dir%/public/generated/fiche_de_stock/'
+    dossier_statistique_visite: '%kernel.project_dir%/public/generated/statistique/visite/'
+    dossier_statistique_reception: '%kernel.project_dir%/public/generated/statistique/reception/'
+    dossier_statistique_constatation: '%kernel.project_dir%/public/generated/statistique/constatation/'
+    dossier_statistique_imprime_technique: '%kernel.project_dir%/public/generated/statistique/imprime_technique/'
+    dossier_statistique_autre_service: '%kernel.project_dir%/public/generated/statistique/autre_service/'
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
