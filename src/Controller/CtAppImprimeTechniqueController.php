@@ -134,6 +134,35 @@ class CtAppImprimeTechniqueController extends AbstractController
      */
     public function ListeUtiliser(Request $request, CtImprimeTechUseRepository $ctImprimeTechUseRepository): Response
     {
+        $mois = [
+            "Janvier" => 1,
+            "Février" => 2,
+            "Mars" => 3,
+            "Avril" => 4,
+            "Mai" => 5,
+            "Juin" => 6,
+            "Juillet" => 7,
+            "Août" => 8,
+            "Septembre" => 9,
+            "Octobre" => 10,
+            "Novembre" => 11,
+            "Décembre" => 12,
+        ];
+        $date = new \DateTime();
+        $annee_max = intval($date->format('Y'));
+        $liste_annee = [
+            strval($annee_max) => $annee_max,
+            strval($annee_max - 1) => $annee_max - 1,
+            strval($annee_max - 2) => $annee_max - 2,
+            strval($annee_max - 3) => $annee_max - 3,
+            strval($annee_max - 4) => $annee_max - 4,
+            strval($annee_max - 5) => $annee_max - 5,
+            strval($annee_max - 6) => $annee_max - 6,
+            strval($annee_max - 7) => $annee_max - 7,
+            strval($annee_max - 8) => $annee_max - 8,
+            strval($annee_max - 9) => $annee_max - 9,
+            strval($annee_max - 10) => $annee_max - 10,
+        ];
         $form_feuille_utilisation = $this->createFormBuilder()
             ->add('date', DateType::class, [
                 'label' => 'Séléctionner la date',
@@ -159,7 +188,7 @@ class CtAppImprimeTechniqueController extends AbstractController
             ->getForm();
         $form_feuille_utilisation->handleRequest($request);
         $form_situation_de_stock = $this->createFormBuilder()
-            ->add('date', DateType::class, [
+            /* ->add('date', DateType::class, [
                 'label' => 'Séléctionner la date',
                 'widget' => 'single_text',
                 'attr' => [
@@ -167,6 +196,31 @@ class CtAppImprimeTechniqueController extends AbstractController
                     'style' => 'width:100%;',
                 ],
                 'data' => new \DateTime('now'),
+            ]) */
+            ->add('annee', ChoiceType::class, [
+                'label' => 'Séléctionner l\'année',
+                'choices' => $liste_annee,
+                'data' => $annee_max,
+                'multiple' => false,
+                'attr' => [
+                    'class' => 'multi',
+                    'multiple' => false,
+                    'style' => 'width:100%;',
+                    'data-live-search' => true,
+                    'data-select' => true,
+                ],
+            ])
+            ->add('mois', ChoiceType::class, [
+                'label' => 'Séléctionner le mois',
+                'choices' => $mois,
+                'multiple' => false,
+                'attr' => [
+                    'class' => 'multi',
+                    'multiple' => false,
+                    'style' => 'width:100%;',
+                    'data-live-search' => true,
+                    'data-select' => true,
+                ],
             ])
             ->add('ct_centre_id', EntityType::class, [
                 'label' => 'Séléctionner le centre',

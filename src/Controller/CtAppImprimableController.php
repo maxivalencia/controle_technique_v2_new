@@ -4106,7 +4106,10 @@ class CtAppImprimableController extends AbstractController
 
         if($request->request->get('form')){
             $rechercheform = $request->request->get('form');
-            $date_stock = $rechercheform['date'];
+            //$date_stock = $rechercheform['date'];
+            $mois = $rechercheform['mois'];
+            $annee = $rechercheform['annee'];
+            $date_stock = $annee.'-'.$mois.'-15';
             $date_of_stock = new \DateTime($date_stock);
             $centre = $this->getUser()->getCtCentreId();
             if($rechercheform['ct_centre_id'] != ""){

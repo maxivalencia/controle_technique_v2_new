@@ -28,7 +28,9 @@
                     <div class="entete-formulaire">Fiche de stock</div><br>
                     <div>
                         {{ form_start(form_situation_de_stock) }}
-                            {{ form_row(form_situation_de_stock.date) }}
+                            {# {{ form_row(form_situation_de_stock.date) }} #}
+                            {{ form_row(form_situation_de_stock.annee) }}
+                            {{ form_row(form_situation_de_stock.mois) }}
                             {{ form_row(form_situation_de_stock.ct_centre_id) }}
                             <button class="btn btn-success" type="submit" formaction="{{ path('app_ct_app_imprimable_fiche_de_stock') }}">
                                 Générer
