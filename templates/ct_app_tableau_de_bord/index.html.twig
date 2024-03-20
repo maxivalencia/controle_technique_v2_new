@@ -13,15 +13,6 @@
                     <i class="fas fa-th mr-1"></i>
                     Visite technique
                 </h3>
-
-                {# <div class="card-tools">
-                    <button type="button" class="btn bg-info btn-sm" data-card-widget="collapse">
-                    <i class="fas fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn bg-info btn-sm" data-card-widget="remove">
-                    <i class="fas fa-times"></i>
-                    </button>
-                </div> #}
             </div>
             <div class="card-body">
                 <canvas class="visite-chart" id="visite-chart"></canvas>
@@ -33,15 +24,6 @@
                     <i class="fas fa-th mr-1"></i>
                     Réception technique
                 </h3>
-
-                {# <div class="card-tools">
-                    <button type="button" class="btn bg-info btn-sm" data-card-widget="collapse">
-                    <i class="fas fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn bg-info btn-sm" data-card-widget="remove">
-                    <i class="fas fa-times"></i>
-                    </button>
-                </div> #}
             </div>
             <div class="card-body">
                 <canvas class="reception-chart" id="reception-chart"></canvas>
@@ -53,15 +35,6 @@
                     <i class="fas fa-th mr-1"></i>
                     Constatation Avant Dédouanement
                 </h3>
-
-                {# <div class="card-tools">
-                    <button type="button" class="btn bg-info btn-sm" data-card-widget="collapse">
-                    <i class="fas fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn bg-info btn-sm" data-card-widget="remove">
-                    <i class="fas fa-times"></i>
-                    </button>
-                </div> #}
             </div>
             <div class="card-body">
                 <canvas class="constatation-chart" id="constatation-chart"></canvas>
@@ -74,12 +47,12 @@
     <script type="text/javascript">
         $(function () {
             'use strict'
-        
+
             var ticksStyle = {
                 fontColor: '#495057',
                 fontStyle: 'bold'
             }
-        
+
             var mode = 'index'
             var intersect = true
 
@@ -89,51 +62,51 @@
                 data: {
                     labels: [{% for jour in jours %}'{{ jour }}',{% endfor %}],
                     datasets: [{
-                    type: 'line',
-                    data: [{% for nombre_visite in nombre_visites %}{{ nombre_visite }},{% endfor %}],
-                    backgroundColor: 'transparent',
-                    borderColor: '#ffffff',
-                    pointBorderColor: '#000000',
-                    pointBackgroundColor: '#007bff',
-                    fill: false
-                    // pointHoverBackgroundColor: '#007bff',
-                    // pointHoverBorderColor    : '#007bff'
+                        type: 'line',
+                        data: [{% for nombre_visite in nombre_visites %}{{ nombre_visite }},{% endfor %}],
+                        backgroundColor: 'transparent',
+                        borderColor: '#ffffff',
+                        pointBorderColor: '#000000',
+                        pointBackgroundColor: '#007bff',
+                        fill: false
+                        // pointHoverBackgroundColor: '#007bff',
+                        // pointHoverBorderColor    : '#007bff'
                     }]
                 },
                 options: {
                     maintainAspectRatio: false,
                     tooltips: {
-                    mode: mode,
-                    intersect: intersect
+                        mode: mode,
+                        intersect: intersect
                     },
                     hover: {
-                    mode: mode,
-                    intersect: intersect
+                        mode: mode,
+                        intersect: intersect
                     },
                     legend: {
                     display: false
                     },
                     scales: {
-                    yAxes: [{
-                        // display: false,
-                        gridLines: {
-                        display: true,
-                        lineWidth: '4px',
-                        color: 'rgba(0, 0, 0, .2)',
-                        zeroLineColor: 'transparent'
-                        },
-                        ticks: $.extend({
-                        beginAtZero: true,
-                        //suggestedMax: 200
-                        }, ticksStyle)
-                    }],
-                    xAxes: [{
-                        display: true,
-                        gridLines: {
-                        display: false
-                        },
-                        ticks: ticksStyle
-                    }]
+                        yAxes: [{
+                            // display: false,
+                            gridLines: {
+                                display: true,
+                                lineWidth: '4px',
+                                color: 'rgba(0, 0, 0, .2)',
+                                zeroLineColor: 'transparent'
+                            },
+                            ticks: $.extend({
+                                beginAtZero: true,
+                                //suggestedMax: 200
+                            }, ticksStyle)
+                        }],
+                        xAxes: [{
+                            display: true,
+                            gridLines: {
+                                display: false
+                            },
+                            ticks: ticksStyle
+                        }]
                     }
                 }
             })
@@ -144,51 +117,51 @@
                 data: {
                     labels: [{% for jour in jours %}'{{ jour }}',{% endfor %}],
                     datasets: [{
-                    type: 'line',
-                    data: [{% for nombre_reception in nombre_receptions %}{{ nombre_reception }},{% endfor %}],
-                    backgroundColor: 'transparent',
-                    borderColor: '#ffffff',
-                    pointBorderColor: '#000000',
-                    pointBackgroundColor: '#007bff',
-                    fill: false
-                    // pointHoverBackgroundColor: '#007bff',
-                    // pointHoverBorderColor    : '#007bff'
+                        type: 'line',
+                        data: [{% for nombre_reception in nombre_receptions %}{{ nombre_reception }},{% endfor %}],
+                        backgroundColor: 'transparent',
+                        borderColor: '#ffffff',
+                        pointBorderColor: '#000000',
+                        pointBackgroundColor: '#007bff',
+                        fill: false
+                        // pointHoverBackgroundColor: '#007bff',
+                        // pointHoverBorderColor    : '#007bff'
                     }]
                 },
                 options: {
                     maintainAspectRatio: false,
                     tooltips: {
-                    mode: mode,
-                    intersect: intersect
+                        mode: mode,
+                        intersect: intersect
                     },
                     hover: {
-                    mode: mode,
-                    intersect: intersect
+                        mode: mode,
+                        intersect: intersect
                     },
                     legend: {
-                    display: false
+                        display: false
                     },
                     scales: {
-                    yAxes: [{
-                        // display: false,
-                        gridLines: {
-                        display: true,
-                        lineWidth: '4px',
-                        color: 'rgba(0, 0, 0, .2)',
-                        zeroLineColor: 'transparent'
-                        },
-                        ticks: $.extend({
-                        beginAtZero: true,
-                        //suggestedMax: 200
-                        }, ticksStyle)
-                    }],
-                    xAxes: [{
-                        display: true,
-                        gridLines: {
-                        display: false
-                        },
-                        ticks: ticksStyle
-                    }]
+                        yAxes: [{
+                            // display: false,
+                            gridLines: {
+                                display: true,
+                                lineWidth: '4px',
+                                color: 'rgba(0, 0, 0, .2)',
+                                zeroLineColor: 'transparent'
+                            },
+                            ticks: $.extend({
+                                beginAtZero: true,
+                                //suggestedMax: 200
+                            }, ticksStyle)
+                        }],
+                        xAxes: [{
+                            display: true,
+                            gridLines: {
+                                display: false
+                            },
+                            ticks: ticksStyle
+                        }]
                     }
                 }
             })
@@ -199,51 +172,51 @@
                 data: {
                     labels: [{% for jour in jours %}'{{ jour }}',{% endfor %}],
                     datasets: [{
-                    type: 'line',
-                    data: [{% for nombre_constatation in nombre_constatations %}{{ nombre_constatation }},{% endfor %}],
-                    backgroundColor: 'transparent',
-                    borderColor: '#ffffff',
-                    pointBorderColor: '#000000',
-                    pointBackgroundColor: '#007bff',
-                    fill: false
-                    // pointHoverBackgroundColor: '#007bff',
-                    // pointHoverBorderColor    : '#007bff'
+                        type: 'line',
+                        data: [{% for nombre_constatation in nombre_constatations %}{{ nombre_constatation }},{% endfor %}],
+                        backgroundColor: 'transparent',
+                        borderColor: '#ffffff',
+                        pointBorderColor: '#000000',
+                        pointBackgroundColor: '#007bff',
+                        fill: false
+                        // pointHoverBackgroundColor: '#007bff',
+                        // pointHoverBorderColor    : '#007bff'
                     }]
                 },
                 options: {
                     maintainAspectRatio: false,
                     tooltips: {
-                    mode: mode,
-                    intersect: intersect
+                        mode: mode,
+                        intersect: intersect
                     },
                     hover: {
-                    mode: mode,
-                    intersect: intersect
+                        mode: mode,
+                        intersect: intersect
                     },
                     legend: {
-                    display: false
+                        display: false
                     },
                     scales: {
-                    yAxes: [{
-                        // display: false,
-                        gridLines: {
-                        display: true,
-                        lineWidth: '4px',
-                        color: 'rgba(0, 0, 0, .2)',
-                        zeroLineColor: 'transparent'
-                        },
-                        ticks: $.extend({
-                        beginAtZero: true,
-                        //suggestedMax: 200
-                        }, ticksStyle)
-                    }],
-                    xAxes: [{
-                        display: true,
-                        gridLines: {
-                        display: false
-                        },
-                        ticks: ticksStyle
-                    }]
+                        yAxes: [{
+                            // display: false,
+                            gridLines: {
+                                display: true,
+                                lineWidth: '4px',
+                                color: 'rgba(0, 0, 0, .2)',
+                                zeroLineColor: 'transparent'
+                            },
+                            ticks: $.extend({
+                                beginAtZero: true,
+                                //suggestedMax: 200
+                            }, ticksStyle)
+                        }],
+                        xAxes: [{
+                            display: true,
+                            gridLines: {
+                                display: false
+                            },
+                            ticks: ticksStyle
+                        }]
                     }
                 }
             })

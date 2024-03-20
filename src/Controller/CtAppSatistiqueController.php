@@ -54,6 +54,8 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 /**
  * @Route("/ct_app_statistique")
