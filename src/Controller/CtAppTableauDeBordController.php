@@ -33,7 +33,7 @@ class CtAppTableauDeBordController extends AbstractController
         $nombre_constatations = new ArrayCollection();
         // calcul des 30 jours
         $nombre_de_jours = 30;
-        $date = new \DateTime();
+        $date = new \DateTime("2023-12-31");
         $i = 0;
         $date->modify('-'.$nombre_de_jours.' day');
         while($i < $nombre_de_jours){
