@@ -61,7 +61,7 @@
                 </td>
             </tr>
         </table>
-        <div align="center" style="font-size:14px;"><u><H3>STATISTIQUE AUTRE SERVICE</H3></u></div>
+        <div align="center" style="font-size:14px;"><u><H3>STATISTIQUE AUTRE SERVICE : {{ titre }}</H3></u></div>
         <div style="margin-left:10px;">
             <table>
                 <tr>
@@ -74,13 +74,13 @@
         </div>
         <table align="center" style="border: 2px solid black;border-collapse: collapse;">
             <tr align="center">
-                <td colspan="2" width="45" style="border: 1px solid black;border-collapse: collapse;"><strong><i>MOTIF</i></strong></td>
-                <td rowspan="3" style="border: 1px solid black;border-collapse: collapse;"><strong><i>AUTRE SERVICE</i></strong></td>
+                <td align="center" valign="middle" colspan="2" width="45" style="border: 1px solid black;border-collapse: collapse;"><strong><i>MOTIF</i></strong></td>
+                <td align="center" valign="middle" rowspan="3" style="border: 1px solid black;border-collapse: collapse;"><strong><i>AUTRE SERVICE</i></strong></td>
             </tr>
             <tr align="center">
-                <td width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Payante</i></strong></td>
-                <td width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Gratuite</i></strong></td>
-                <td width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Total</i></strong></td>
+                <td align="center" valign="middle" width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Payante</i></strong></td>
+                <td align="center" valign="middle" width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Gratuite</i></strong></td>
+                <td align="center" valign="middle" width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Total</i></strong></td>
             </tr>
             {% for ct_autre_service in ct_autre_services %}
                 <tr style="font-size:10px;">

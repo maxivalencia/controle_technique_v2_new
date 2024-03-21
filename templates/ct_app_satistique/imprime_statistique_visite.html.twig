@@ -61,7 +61,7 @@
                 </td>
             </tr>
         </table>
-        <div align="center" style="font-size:14px;"><u><H3>STATISTIQUE VISITE TECHNIQUE</H3></u></div>
+        <div align="center" style="font-size:14px;"><u><H3>STATISTIQUE VISITE TECHNIQUE : {{ titre }}</H3></u></div>
         <div style="margin-left:10px;">
             <table>
                 <tr>
@@ -74,27 +74,27 @@
         </div>
         <table align="center" style="border: 2px solid black;border-collapse: collapse;">
             <tr align="center">
-                <td colspan="2" width="45" style="border: 1px solid black;border-collapse: collapse;"><strong><i>USAGE</i></strong></td>
-                <td rowspan="5" style="border: 1px solid black;border-collapse: collapse;"><strong><i>VISITE SUR SITE</i></strong></td>
-                <td rowspan="5" style="border: 1px solid black;border-collapse: collapse;"><strong><i>VISITE ITINERANTE</i></strong></td>
-                <td rowspan="5" style="border: 1px solid black;border-collapse: collapse;"><strong><i>VISITE A DOMICILE</i></strong></td>
+                <td align="center" valign="middle" colspan="2" width="45" style="border: 1px solid black;border-collapse: collapse;"><strong><i>USAGE</i></strong></td>
+                <td align="center" valign="middle" rowspan="5" style="border: 1px solid black;border-collapse: collapse;"><strong><i>VISITE SUR SITE</i></strong></td>
+                <td align="center" valign="middle" rowspan="5" style="border: 1px solid black;border-collapse: collapse;"><strong><i>VISITE ITINERANTE</i></strong></td>
+                <td align="center" valign="middle" rowspan="5" style="border: 1px solid black;border-collapse: collapse;"><strong><i>VISITE A DOMICILE</i></strong></td>
             </tr>
             <tr align="center">
-                <td width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Apte</i></strong></td>
-                <td width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Inapte</i></strong></td>
-                <td width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Payante</i></strong></td>
-                <td width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Gratuite</i></strong></td>
-                <td width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Total</i></strong></td>
-                <td width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Apte</i></strong></td>
-                <td width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Inapte</i></strong></td>
-                <td width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Payante</i></strong></td>
-                <td width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Gratuite</i></strong></td>
-                <td width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Total</i></strong></td>
-                <td width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Apte</i></strong></td>
-                <td width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Inapte</i></strong></td>
-                <td width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Payante</i></strong></td>
-                <td width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Gratuit</i></strong></td>
-                <td width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Total</i></strong></td>
+                <td align="center" valign="middle" width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Apte</i></strong></td>
+                <td align="center" valign="middle" width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Inapte</i></strong></td>
+                <td align="center" valign="middle" width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Payante</i></strong></td>
+                <td align="center" valign="middle" width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Gratuite</i></strong></td>
+                <td align="center" valign="middle" width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Total</i></strong></td>
+                <td align="center" valign="middle" width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Apte</i></strong></td>
+                <td align="center" valign="middle" width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Inapte</i></strong></td>
+                <td align="center" valign="middle" width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Payante</i></strong></td>
+                <td align="center" valign="middle" width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Gratuite</i></strong></td>
+                <td align="center" valign="middle" width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Total</i></strong></td>
+                <td align="center" valign="middle" width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Apte</i></strong></td>
+                <td align="center" valign="middle" width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Inapte</i></strong></td>
+                <td align="center" valign="middle" width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Payante</i></strong></td>
+                <td align="center" valign="middle" width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Gratuit</i></strong></td>
+                <td align="center" valign="middle" width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Total</i></strong></td>
             </tr>
             {% for ct_visite in ct_visites %}
                 <tr style="font-size:10px;">
@@ -120,6 +120,24 @@
                     <td colspan="16">Aucun enregistrement trouvé</td>
                 </tr>
             {% endfor %}
+                <tr style="font-size:10px;">
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;"><strong>TOTAL : </strong></td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ total_apte_sur_site }}</strong></td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ total_inapte_sur_site }}</strong></td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ total_total_payante_sur_site }}</strong></td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ total_gratuite_sur_site }}</strong></td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ total_total_sur_site }}</strong></td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ total_apte_itinerante }}</strong></td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ total_inapte_itinerante }}</strong></td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ total_total_payante_itinerante }}</strong></td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ total_gratuite_itinerante }}</strong></td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ total_total_itinerante }}</strong></td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ total_apte_domicile }}</strong></td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ total_inapte_domicile }}</strong></td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ total_total_payante_domicile }}</strong></td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ total_gratuite_domicile }}</strong></td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ total_total_domicile }}</strong></td>
+                </tr>
         </table>
         <br>
         <br>

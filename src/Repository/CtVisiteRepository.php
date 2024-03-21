@@ -98,4 +98,29 @@ class CtVisiteRepository extends ServiceEntityRepository
             //->getOneOrNullResult()
         ;
     }
+
+    public function findNombreVisitePayante($date, $type, $aptitude, $centre, $usage, $utilisation): ?int
+    {
+        return $this->createQueryBuilder('c')
+            ->select('COUNT(c) ')
+            ->andWhere('c.vst_created LIKE :val1')
+            ->andWhere('c.vst_is_active = :val2')
+            ->andWhere('c.ct_type_visite_id IN :val3')
+            ->andWhere('c.vst_is_apte IN :val4')
+            ->andWhere('c.ct_centre_id IN :val5')
+            ->andWhere('c.ct_usage_id = :val6')
+            ->andWhere('c.ct_utilisation_id = :val7')
+            ->setParameter('val1', '%'.$date.'%')
+            ->setParameter('val2', 1)
+            ->setParameter('val3', $type)
+            ->setParameter('val4', $aptitude)
+            ->setParameter('val5', $centre)
+            ->setParameter('val6', $usage)
+            ->setParameter('val7', $utilisation)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleScalarResult()
+            //->getOneOrNullResult()
+        ;
+    }
 }
