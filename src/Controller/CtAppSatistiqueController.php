@@ -68,8 +68,8 @@ class CtAppSatistiqueController extends AbstractController
      */
     public function index(): Response
     {
-        return $this->render('ct_app_satistique/index.html.twig', [
-            'controller_name' => 'CtAppSatistiqueController',
+        return $this->render('ct_app_statistique/index.html.twig', [
+            'controller_name' => 'CtAppStatistiqueController',
         ]);
     }
 
@@ -81,13 +81,25 @@ class CtAppSatistiqueController extends AbstractController
         $centre = new CtCentre();
         $titre = "";
         $date_effective = "";
+        $mois_effective = "";
+        $trimeste_effective = "";
+        $semestre_effective = "";
+        $annee_effective = "";
 
         if($request->request->get('form')){
             $rechercheform = $request->request->get('form');
-            $mois_effective = $rechercheform['mois'];
-            $trimeste_effective = $rechercheform['trimestre'];
-            $semestre_effective = $rechercheform['semestre'];
-            $annee_effective = $rechercheform['annee'];
+            if(array_key_exists('mois', $rechercheform)){
+                $mois_effective = $rechercheform['mois'];
+            }
+            if(array_key_exists('trimestre', $rechercheform)){
+                $trimeste_effective = $rechercheform['trimestre'];
+            }
+            if(array_key_exists('semestre', $rechercheform)){
+                $semestre_effective = $rechercheform['semestre'];
+            }
+            if(array_key_exists('annee', $rechercheform)){
+                $annee_effective = $rechercheform['annee'];
+            }
             $date_effective = $annee_effective;
             $centre = $this->getUser()->getCtCentreId();
             if($rechercheform['ct_centre_id'] != ""){
@@ -156,7 +168,6 @@ class CtAppSatistiqueController extends AbstractController
                 $gratuite_domicile = $ctVisiteRepository->findNombreVisitePayante($date_effective, [2], [0, 1], $lstctrdom, [$lstu->getId()], 1);
                 $total_domicile = $total_payante_domicile + $gratuite_domicile;
 
-                
                 $total_apte_sur_site += $apte_sur_site;
                 $total_inapte_sur_site += $inapte_sur_site;
                 $total_total_payante_sur_site += $total_payante_sur_site;
@@ -174,6 +185,7 @@ class CtAppSatistiqueController extends AbstractController
                 $total_total_domicile += $total_domicile;
 
                 $statistique = [
+                    'usage' => $lstu->getUsgLibelle(),
                     'apte_sur_site' => $apte_sur_site,
                     'inapte_sur_site' => $inapte_sur_site,
                     'total_payante_sur_site' => $total_payante_sur_site,
@@ -429,7 +441,7 @@ class CtAppSatistiqueController extends AbstractController
             ->getForm();
         $form_mensuel->handleRequest($request);
 
-        return $this->render('ct_app_satistique/statistique_visite.html.twig', [
+        return $this->render('ct_app_statistique/statistique_visite.html.twig', [
             'form_annuel' => $form_annuel->createView(),
             'form_semestriel' => $form_semestriel->createView(),
             'form_trimestriel' => $form_trimestriel->createView(),
@@ -630,7 +642,7 @@ class CtAppSatistiqueController extends AbstractController
             ->getForm();
         $form_mensuel->handleRequest($request);
 
-        return $this->render('ct_app_satistique/statistique_reception.html.twig', [
+        return $this->render('ct_app_statistique/statistique_reception.html.twig', [
             'form_annuel' => $form_annuel->createView(),
             'form_semestriel' => $form_semestriel->createView(),
             'form_trimestriel' => $form_trimestriel->createView(),
@@ -831,7 +843,7 @@ class CtAppSatistiqueController extends AbstractController
             ->getForm();
         $form_mensuel->handleRequest($request);
 
-        return $this->render('ct_app_satistique/statistique_constatation.html.twig', [
+        return $this->render('ct_app_statistique/statistique_constatation.html.twig', [
             'form_annuel' => $form_annuel->createView(),
             'form_semestriel' => $form_semestriel->createView(),
             'form_trimestriel' => $form_trimestriel->createView(),
@@ -1032,7 +1044,7 @@ class CtAppSatistiqueController extends AbstractController
             ->getForm();
         $form_mensuel->handleRequest($request);
 
-        return $this->render('ct_app_satistique/statistique_imprimer.html.twig', [
+        return $this->render('ct_app_statistique/statistique_imprimer.html.twig', [
             'form_annuel' => $form_annuel->createView(),
             'form_semestriel' => $form_semestriel->createView(),
             'form_trimestriel' => $form_trimestriel->createView(),
@@ -1233,7 +1245,7 @@ class CtAppSatistiqueController extends AbstractController
             ->getForm();
         $form_mensuel->handleRequest($request);
 
-        return $this->render('ct_app_satistique/statistique_autre_service.html.twig', [
+        return $this->render('ct_app_statistique/statistique_autre_service.html.twig', [
             'form_annuel' => $form_annuel->createView(),
             'form_semestriel' => $form_semestriel->createView(),
             'form_trimestriel' => $form_trimestriel->createView(),

@@ -98,22 +98,22 @@
             </tr>
             {% for ct_visite in ct_visites %}
                 <tr style="font-size:10px;">
-                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite. }}</td>
-                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite. }}</td>
-                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite. }}</td>
-                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite. }}</td>
-                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite. }}</td>
-                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite. }}</td>
-                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite. }}</td>
-                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite. }}</td>
-                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite. }}</td>
-                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite. }}</td>
-                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite. }}</td>
-                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite. }}</td>
-                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite. }}</td>
-                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite. }}</td>
-                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite. }}</td>
-                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite. }}</td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite.usage }}</td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite.apte_sur_site }}</td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite.inapte_sur_site }}</td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite.total_payante_sur_site }}</td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite.gratuite_sur_site }}</td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite.total_sur_site }}</td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite.apte_itinerante }}</td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite.inapte_itinerante }}</td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite.total_payante_itinerante }}</td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite.gratuite_itinerante }}</td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite.total_itinerante }}</td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite.apte_domicile }}</td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite.inapte_domicile }}</td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite.total_payante_domicile }}</td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite.gratuite_domicile }}</td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite.total_domicile }}</td>
                 </tr>
             {% else %}
                 <tr>
