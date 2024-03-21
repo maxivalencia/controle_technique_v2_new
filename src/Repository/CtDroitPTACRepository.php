@@ -82,4 +82,22 @@ class CtDroitPTACRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
+    /**
+     * @return CtDroitPTAC[] Returns an array of CtDroitPTAC objects
+     */
+    public function findDroitUniquePTACReception($type_droit, $arrete_id): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.ct_type_droit_ptac_id = :val1')
+            ->andWhere('c.ct_arrete_prix_id = :val2')
+            ->setParameter('val1', $type_droit)
+            ->setParameter('val2', $arrete_id)
+            ->GroupBy('c.ct_type_reception_id')
+            ->orderBy('c.ct_arrete_prix_id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }
