@@ -225,7 +225,7 @@ class CtAppSatistiqueController extends AbstractController
                 'province' => $centre->getCtProvinceId()->getPrvNom(),
                 'centre' => $centre->getCtrNom(),
                 'user' => $this->getUser(),
-                'ct_visite'=> $liste_statistique,
+                'ct_visites'=> $liste_statistique,
                 'total_apte_sur_site'=> $total_apte_sur_site,
                 'total_inapte_sur_site'=> $total_inapte_sur_site,
                 'total_total_payante_sur_site'=> $total_total_payante_sur_site,
@@ -243,7 +243,7 @@ class CtAppSatistiqueController extends AbstractController
                 'total_total_domicile'=> $total_total_domicile ,
             ]);
             $dompdf->loadHtml($html);
-            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->setPaper('A4', 'landscape');
             $dompdf->render();
             $output = $dompdf->output();
             $filename = "STATISTIQUE_VISITE_".$centre->getCtrNom().'_'.$date->format('Y_M_d_H_i_s').".pdf";

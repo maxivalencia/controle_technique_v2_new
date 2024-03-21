@@ -73,18 +73,19 @@
             </table>
         </div>
         <table align="center" style="border: 2px solid black;border-collapse: collapse;">
+            {% set cellule = "20px" %}
             <tr align="center">
-                <td align="center" valign="middle" colspan="2" width="45" style="border: 1px solid black;border-collapse: collapse;"><strong><i>MOTIF</i></strong></td>
-                <td align="center" valign="middle" rowspan="3" style="border: 1px solid black;border-collapse: collapse;"><strong><i>AUTRE SERVICE</i></strong></td>
+                <td align="center" valign="middle" rowspan="2" width="45px" style="border: 1px solid black;border-collapse: collapse;"><strong><i>MOTIF</i></strong></td>
+                <td align="center" valign="middle" colspan="3" style="border: 1px solid black;border-collapse: collapse;"><strong><i>AUTRE SERVICE</i></strong></td>
             </tr>
             <tr align="center">
-                <td align="center" valign="middle" width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Payante</i></strong></td>
-                <td align="center" valign="middle" width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Gratuite</i></strong></td>
-                <td align="center" valign="middle" width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Total</i></strong></td>
+                <td align="center" valign="middle" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Payante</i></strong></td>
+                <td align="center" valign="middle" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Gratuite</i></strong></td>
+                <td align="center" valign="middle" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Total</i></strong></td>
             </tr>
             {% for ct_autre_service in ct_autre_services %}
                 <tr style="font-size:10px;">
-                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_autre_service. }}</td>
+                    <td align="left" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ ct_autre_service. }}</strong></td>
                     <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_autre_service. }}</td>
                     <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_autre_service. }}</td>
                     <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_autre_service. }}</td>

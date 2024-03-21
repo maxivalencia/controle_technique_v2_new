@@ -73,54 +73,41 @@
             </table>
         </div>
         <table align="center" style="border: 2px solid black;border-collapse: collapse;">
+            {% set cellule = "20px" %}
             <tr align="center">
-                <td align="center" valign="middle" width="50" style="border: 1px solid black;border-collapse: collapse;"><strong><i>MOTIF<br>()</i></strong></td>
-                <td align="center" valign="middle" rowspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>PV<br>()</i></strong></td>
-                <td align="center" valign="middle" rowspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>PVM<br>()</i></strong></td>
-                <td align="center" valign="middle" rowspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>PVMC<br>()</i></strong></td>
-                <td align="center" valign="middle" rowspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>CE<br>()</i></strong></td>
-                <td align="center" valign="middle" rowspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>CB<br>()</i></strong></td>
-                <td align="center" valign="middle" rowspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>CJ<br>()</i></strong></td>
-                <td align="center" valign="middle" rowspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>CJBR<br>()</i></strong></td>
-                <td align="center" valign="middle" rowspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>CR<br>()</i></strong></td>
-                <td align="center" valign="middle" rowspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>CAE<br>()</i></strong></td>
-                <td align="center" valign="middle" rowspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>CIM31<br>()</i></strong></td>
-                <td align="center" valign="middle" rowspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>CIM31B<br>()</i></strong></td>
-                <td align="center" valign="middle" rowspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>CIM32<br>()</i></strong></td>
-                <td align="center" valign="middle" rowspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>CIM32B<br>()</i></strong></td>
-                <td align="center" valign="middle" rowspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>PQL<br>()</i></strong></td>
+                <td align="center" valign="middle" width="50px" style="border: 1px solid black;border-collapse: collapse;"><strong><i>MOTIF<br>()</i></strong></td>
+                <td align="center" valign="middle" colspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>PV<br>()</i></strong></td>
+                <td align="center" valign="middle" colspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>PVM<br>()</i></strong></td>
+                <td align="center" valign="middle" colspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>PVMC<br>()</i></strong></td>
+                <td align="center" valign="middle" colspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>CE<br>()</i></strong></td>
+                <td align="center" valign="middle" colspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>CB<br>()</i></strong></td>
+                <td align="center" valign="middle" colspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>CJ<br>()</i></strong></td>
+                <td align="center" valign="middle" colspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>CJBR<br>()</i></strong></td>
+                <td align="center" valign="middle" colspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>CR<br>()</i></strong></td>
+                <td align="center" valign="middle" colspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>CAE<br>()</i></strong></td>
+                <td align="center" valign="middle" colspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>CIM31<br>()</i></strong></td>
+                <td align="center" valign="middle" colspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>CIM31B<br>()</i></strong></td>
+                <td align="center" valign="middle" colspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>CIM32<br>()</i></strong></td>
+                <td align="center" valign="middle" colspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>CIM32B<br>()</i></strong></td>
+                <td align="center" valign="middle" colspan="2" style="border: 1px solid black;border-collapse: collapse;"><strong><i>PQL<br>()</i></strong></td>
             </tr>
             {% for ct_imprime in ct_imprimes %}
                 <tr style="font-size:10px;">
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}%</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}%</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}%</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}%</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}%</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}%</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}%</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}%</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}%</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}%</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}%</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}%</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}%</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
-                    <td align="right" width="50" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}%</td>
+                    <td align="left" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ ct_imprime. }}</strong></td>
+                    <td align="right" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
+                    <td align="right" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
+                    <td align="right" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
+                    <td align="right" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
+                    <td align="right" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
+                    <td align="right" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
+                    <td align="right" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
+                    <td align="right" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
+                    <td align="right" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
+                    <td align="right" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
+                    <td align="right" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
+                    <td align="right" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
+                    <td align="right" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
+                    <td align="right" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;">{{ ct_imprime. }}</td>
                 </tr>
             {% else %}
                 <tr>
