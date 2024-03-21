@@ -86,6 +86,33 @@ class CtAppSatistiqueController extends AbstractController
         $semestre_effective = "";
         $annee_effective = "";
 
+        $mois_texte = [
+            1 => "Janvier",
+            2 => "Février",
+            3 => "Mars",
+            4 => "Avril",
+            5 => "Mai",
+            6 => "Juin",
+            7 => "Juillet",
+            8 => "Août",
+            9 => "Septembre",
+            10 => "Octobre",
+            11 => "Novembre",
+            12 => "Décembre",
+        ];
+
+        $trimestre_texte = [
+            1 => "1er trimestre",
+            2 => "2ème trimestre",
+            3 => "3ème trimestre",
+            4 => "4ème trimestre",
+        ];
+
+        $semestre_texte = [
+            1 => "1er semestre",
+            2 => "2ème semestre",
+        ];
+
         if($request->request->get('form')){
             $rechercheform = $request->request->get('form');
             if(array_key_exists('mois', $rechercheform)){
@@ -101,6 +128,7 @@ class CtAppSatistiqueController extends AbstractController
                 $annee_effective = $rechercheform['annee'];
             }
             $date_effective = $annee_effective;
+            $titre = $date_effective;
             $centre = $this->getUser()->getCtCentreId();
             if($rechercheform['ct_centre_id'] != ""){
                 $centre = $ctCentreRepository->findOneBy(["id" => $rechercheform['ct_centre_id']]);
@@ -110,12 +138,32 @@ class CtAppSatistiqueController extends AbstractController
 
             if($mois_effective != null){
                 $date_effective = $annee_effective.'-'.$mois_effective;
+                $titre = $mois_texte[$mois_effective].' '.$annee_effective;
             }
             if($trimeste_effective != null){
-                $date_effective = $annee_effective.'-'.$trimeste_effective;
+                switch($trimeste_effective){
+                    case 1:
+                        $date_effective = $annee_effective.'-01% OR c.vst_created LIKE %'.$annee_effective.'-02% OR c.vst_created LIKE %'.$annee_effective.'-03';
+                        break;
+                    
+                    case 2:
+                        $date_effective = $annee_effective.'-04% OR c.vst_created LIKE %'.$annee_effective.'-05% OR c.vst_created LIKE %'.$annee_effective.'-06';
+                        break;
+                            
+                    case 3:
+                        $date_effective = $annee_effective.'-07% OR c.vst_created LIKE %'.$annee_effective.'-08% OR c.vst_created LIKE %'.$annee_effective.'-09';
+                        break;
+                        
+                    case 4:
+                        $date_effective = $annee_effective.'-10% OR c.vst_created LIKE %'.$annee_effective.'-11% OR c.vst_created LIKE %'.$annee_effective.'-12';
+                        break;
+                        
+                }
+                $titre = $trimestre_texte[$trimeste_effective].' '.$annee_effective;
             }
             if($semestre_effective != null){
                 $date_effective = $annee_effective.'-'.$semestre_effective;
+                $titre = $semestre_texte[$semestre_effective].' '.$annee_effective;
             }
 
             //sur site

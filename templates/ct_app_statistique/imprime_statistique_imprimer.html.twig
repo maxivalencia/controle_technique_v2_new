@@ -61,17 +61,7 @@
                 </td>
             </tr>
         </table>
-        <div align="center" style="font-size:14px;"><u><H3>STATISTIQUE IMPRIME TECHNIQUE : {{ titre }}</H3></u></div>
-        <div style="margin-left:10px;">
-            <table>
-                <tr>
-                    <td width="300" align="left"><span style="font-size:14px;"><u>Centre</u> : <strong>{{ centre }}</strong></span></td>
-                </tr>
-                <tr>
-                    {# <td align="left"><span style="font-size:14px;"><u>Date</u> : <strong>{{ date_visite|date('d') }} {{ trans_day_hash[date_visite|date('F')] }} {{ date_visite|date('Y') }}</strong></td> #}
-                </tr>
-            </table>
-        </div>
+        <div align="center" style="font-size:14px;"><u><H3>STATISTIQUE IMPRIME TECHNIQUE {{ centre }} : {{ titre }}</H3></u></div>
         <table align="center" style="border: 2px solid black;border-collapse: collapse;">
             {% set cellule = "20px" %}
             <tr align="center">
