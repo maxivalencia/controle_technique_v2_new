@@ -145,24 +145,30 @@ class CtAppSatistiqueController extends AbstractController
                     case 1:
                         $date_effective = $annee_effective.'-01% OR c.vst_created LIKE %'.$annee_effective.'-02% OR c.vst_created LIKE %'.$annee_effective.'-03';
                         break;
-                    
+
                     case 2:
                         $date_effective = $annee_effective.'-04% OR c.vst_created LIKE %'.$annee_effective.'-05% OR c.vst_created LIKE %'.$annee_effective.'-06';
                         break;
-                            
+
                     case 3:
                         $date_effective = $annee_effective.'-07% OR c.vst_created LIKE %'.$annee_effective.'-08% OR c.vst_created LIKE %'.$annee_effective.'-09';
                         break;
-                        
+
                     case 4:
                         $date_effective = $annee_effective.'-10% OR c.vst_created LIKE %'.$annee_effective.'-11% OR c.vst_created LIKE %'.$annee_effective.'-12';
                         break;
-                        
                 }
                 $titre = $trimestre_texte[$trimeste_effective].' '.$annee_effective;
             }
             if($semestre_effective != null){
-                $date_effective = $annee_effective.'-'.$semestre_effective;
+                switch($trimeste_effective){
+                    case 1:
+                        $date_effective = $annee_effective.'-01% OR c.vst_created LIKE %'.$annee_effective.'-02% OR c.vst_created LIKE %'.$annee_effective.'-03% OR c.vst_created LIKE %'.$annee_effective.'-04% OR c.vst_created LIKE %'.$annee_effective.'-05% OR c.vst_created LIKE %'.$annee_effective.'-06';
+                        break;
+                    case 2:
+                        $date_effective = $annee_effective.'-07% OR c.vst_created LIKE %'.$annee_effective.'-08% OR c.vst_created LIKE %'.$annee_effective.'-09% OR c.vst_created LIKE %'.$annee_effective.'-10% OR c.vst_created LIKE %'.$annee_effective.'-11% OR c.vst_created LIKE %'.$annee_effective.'-12';
+                        break;
+                }
                 $titre = $semestre_texte[$semestre_effective].' '.$annee_effective;
             }
 
@@ -182,6 +188,11 @@ class CtAppSatistiqueController extends AbstractController
             $total_total_payante_domicile = 0;
             $total_gratuite_domicile = 0;
             $total_total_domicile = 0;
+            $total_total_apte = 0;
+            $total_total_inapte = 0;
+            $total_total_payante = 0;
+            $total_total_gratuite = 0;
+            $total_total_visite = 0;
 
             $liste_usages = $ctUsageRepository->findAll();
             $liste_statistique = new ArrayCollection();
@@ -216,6 +227,12 @@ class CtAppSatistiqueController extends AbstractController
                 $gratuite_domicile = $ctVisiteRepository->findNombreVisitePayante($date_effective, [2], [0, 1], $lstctrdom, [$lstu->getId()], 1);
                 $total_domicile = $total_payante_domicile + $gratuite_domicile;
 
+                $total_apte = $apte_sur_site + $apte_itinerante + $apte_domicile;
+                $total_inapte = $inapte_sur_site + $inapte_itinerante + $inapte_domicile;
+                $total_payante = $total_apte + $total_inapte;
+                $total_gratuite = $gratuite_sur_site + $gratuite_itinerante + $gratuite_domicile;
+                $total_visite = $total_payante + $total_gratuite;
+
                 $total_apte_sur_site += $apte_sur_site;
                 $total_inapte_sur_site += $inapte_sur_site;
                 $total_total_payante_sur_site += $total_payante_sur_site;
@@ -231,6 +248,11 @@ class CtAppSatistiqueController extends AbstractController
                 $total_total_payante_domicile += $total_payante_domicile;
                 $total_gratuite_domicile += $gratuite_domicile;
                 $total_total_domicile += $total_domicile;
+                $total_total_apte += $total_apte;
+                $total_total_inapte += $total_inapte;
+                $total_total_payante += $total_payante;
+                $total_total_gratuite += $total_gratuite;
+                $total_total_visite += $total_visite;
 
                 $statistique = [
                     'usage' => $lstu->getUsgLibelle(),
@@ -249,6 +271,11 @@ class CtAppSatistiqueController extends AbstractController
                     'total_payante_domicile' => $total_payante_domicile,
                     'gratuite_domicile' => $gratuite_domicile,
                     'total_domicile' => $total_domicile,
+                    'total_apte' => $total_apte,
+                    'total_inapte' => $total_inapte,
+                    'total_payante' => $total_payante,
+                    'total_gratuite' => $total_gratuite,
+                    'total_visite' => $total_visite,
                 ];
                 $liste_statistique->add($statistique);
             }
@@ -289,6 +316,11 @@ class CtAppSatistiqueController extends AbstractController
                 'total_total_payante_domicile'=> $total_total_payante_domicile,
                 'total_gratuite_domicile'=> $total_gratuite_domicile,
                 'total_total_domicile'=> $total_total_domicile ,
+                'total_total_apte'=> $total_total_apte,
+                'total_total_inapte'=> $total_total_inapte,
+                'total_total_payante'=> $total_total_payante,
+                'total_total_gratuite'=> $total_total_gratuite,
+                'total_total_visite'=> $total_total_visite,
             ]);
             $dompdf->loadHtml($html);
             $dompdf->setPaper('A4', 'landscape');
@@ -500,8 +532,263 @@ class CtAppSatistiqueController extends AbstractController
     /**
      * @Route("/statistique_reception", name="app_ct_app_statistique_statistique_reception")
      */
-    public function StatistiqueReception(Request $request): Response
+    public function StatistiqueReception(Request $request, CtReceptionRepository $ctReceptionRepository, CtCentreRepository $ctCentreRepository): Response
     {
+        $centre = new CtCentre();
+        $titre = "";
+        $date_effective = "";
+        $mois_effective = "";
+        $trimeste_effective = "";
+        $semestre_effective = "";
+        $annee_effective = "";
+
+        $mois_texte = [
+            1 => "Janvier",
+            2 => "Février",
+            3 => "Mars",
+            4 => "Avril",
+            5 => "Mai",
+            6 => "Juin",
+            7 => "Juillet",
+            8 => "Août",
+            9 => "Septembre",
+            10 => "Octobre",
+            11 => "Novembre",
+            12 => "Décembre",
+        ];
+
+        $trimestre_texte = [
+            1 => "1er trimestre",
+            2 => "2ème trimestre",
+            3 => "3ème trimestre",
+            4 => "4ème trimestre",
+        ];
+
+        $semestre_texte = [
+            1 => "1er semestre",
+            2 => "2ème semestre",
+        ];
+
+        if($request->request->get('form')){
+            $rechercheform = $request->request->get('form');
+            if(array_key_exists('mois', $rechercheform)){
+                $mois_effective = $rechercheform['mois'];
+            }
+            if(array_key_exists('trimestre', $rechercheform)){
+                $trimeste_effective = $rechercheform['trimestre'];
+            }
+            if(array_key_exists('semestre', $rechercheform)){
+                $semestre_effective = $rechercheform['semestre'];
+            }
+            if(array_key_exists('annee', $rechercheform)){
+                $annee_effective = $rechercheform['annee'];
+            }
+            $date_effective = $annee_effective;
+            $titre = $date_effective;
+            $centre = $this->getUser()->getCtCentreId();
+            if($rechercheform['ct_centre_id'] != ""){
+                $centre = $ctCentreRepository->findOneBy(["id" => $rechercheform['ct_centre_id']]);
+            } else{
+                $centre = $this->getUser()->getCtCentreId();
+            }
+
+            if($mois_effective != null){
+                $date_effective = $annee_effective.'-'.$mois_effective;
+                $titre = $mois_texte[$mois_effective].' '.$annee_effective;
+            }
+            if($trimeste_effective != null){
+                switch($trimeste_effective){
+                    case 1:
+                        $date_effective = $annee_effective.'-01% OR c.vst_created LIKE %'.$annee_effective.'-02% OR c.vst_created LIKE %'.$annee_effective.'-03';
+                        break;
+
+                    case 2:
+                        $date_effective = $annee_effective.'-04% OR c.vst_created LIKE %'.$annee_effective.'-05% OR c.vst_created LIKE %'.$annee_effective.'-06';
+                        break;
+
+                    case 3:
+                        $date_effective = $annee_effective.'-07% OR c.vst_created LIKE %'.$annee_effective.'-08% OR c.vst_created LIKE %'.$annee_effective.'-09';
+                        break;
+
+                    case 4:
+                        $date_effective = $annee_effective.'-10% OR c.vst_created LIKE %'.$annee_effective.'-11% OR c.vst_created LIKE %'.$annee_effective.'-12';
+                        break;
+                }
+                $titre = $trimestre_texte[$trimeste_effective].' '.$annee_effective;
+            }
+            if($semestre_effective != null){
+                switch($trimeste_effective){
+                    case 1:
+                        $date_effective = $annee_effective.'-01% OR c.vst_created LIKE %'.$annee_effective.'-02% OR c.vst_created LIKE %'.$annee_effective.'-03% OR c.vst_created LIKE %'.$annee_effective.'-04% OR c.vst_created LIKE %'.$annee_effective.'-05% OR c.vst_created LIKE %'.$annee_effective.'-06';
+                        break;
+                    case 2:
+                        $date_effective = $annee_effective.'-07% OR c.vst_created LIKE %'.$annee_effective.'-08% OR c.vst_created LIKE %'.$annee_effective.'-09% OR c.vst_created LIKE %'.$annee_effective.'-10% OR c.vst_created LIKE %'.$annee_effective.'-11% OR c.vst_created LIKE %'.$annee_effective.'-12';
+                        break;
+                }
+                $titre = $semestre_texte[$semestre_effective].' '.$annee_effective;
+            }
+
+            //sur site
+            $total_apte_sur_site = 0;
+            $total_inapte_sur_site = 0;
+            $total_total_payante_sur_site = 0;
+            $total_gratuite_sur_site = 0;
+            $total_total_sur_site = 0;
+            $total_apte_itinerante = 0;
+            $total_inapte_itinerante = 0;
+            $total_total_payante_itinerante = 0;
+            $total_gratuite_itinerante = 0;
+            $total_total_itinerante = 0;
+            $total_apte_domicile = 0;
+            $total_inapte_domicile = 0;
+            $total_total_payante_domicile = 0;
+            $total_gratuite_domicile = 0;
+            $total_total_domicile = 0;
+            $total_total_apte = 0;
+            $total_total_inapte = 0;
+            $total_total_payante = 0;
+            $total_total_gratuite = 0;
+            $total_total_visite = 0;
+
+            $liste_usages = $ctUsageRepository->findAll();
+            $liste_statistique = new ArrayCollection();
+            foreach($liste_usages as $lstu){
+                $apte_sur_site = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [1], [$centre->getId()], [$lstu->getId()], 2);
+                $inapte_sur_site = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [0], [$centre->getId()], [$lstu->getId()], 2);
+                $total_payante_sur_site = $apte_sur_site + $inapte_sur_site;
+                $gratuite_sur_site = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [0, 1], [$centre->getId()], [$lstu->getId()], 1);
+                $total_sur_site = $total_payante_sur_site + $gratuite_sur_site;
+
+                $liste_centre_itinerante = $ctCentreRepository->findBy(["ctr_code" => $centre->getCtrCode()]);
+                $lstctrit = new ArrayCollection();
+                foreach($liste_centre_itinerante as $lstc){
+                    if($centre->getId() != $lstc->getId()){
+                        $lstctrit->add($lstc->getId());
+                    }
+                }
+                $apte_itinerante = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [1], $lstctrit, [$lstu->getId()], 2);
+                $inapte_itinerante = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [0], $lstctrit, [$lstu->getId()], 2);
+                $total_payante_itinerante = $apte_itinerante + $inapte_itinerante;
+                $gratuite_itinerante = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [0, 1], $lstctrit, [$lstu->getId()], 1);
+                $total_itinerante = $total_payante_itinerante + $gratuite_itinerante;
+
+                $liste_centres = $ctCentreRepository->findBy(["ctr_code" => $centre->getCtrCode()]);
+                $lstctrdom = new ArrayCollection();
+                foreach($liste_centres as $lstc){
+                    $lstctrdom->add($lstc->getId());
+                }
+                $apte_domicile = $ctVisiteRepository->findNombreVisitePayante($date_effective, [2], [1], $lstctrdom, [$lstu->getId()], 2);
+                $inapte_domicile = $ctVisiteRepository->findNombreVisitePayante($date_effective, [2], [0], $lstctrdom, [$lstu->getId()], 2);
+                $total_payante_domicile = $apte_domicile + $inapte_domicile;
+                $gratuite_domicile = $ctVisiteRepository->findNombreVisitePayante($date_effective, [2], [0, 1], $lstctrdom, [$lstu->getId()], 1);
+                $total_domicile = $total_payante_domicile + $gratuite_domicile;
+
+                $total_apte = $apte_sur_site + $apte_itinerante + $apte_domicile;
+                $total_inapte = $inapte_sur_site + $inapte_itinerante + $inapte_domicile;
+                $total_payante = $total_apte + $total_inapte;
+                $total_gratuite = $gratuite_sur_site + $gratuite_itinerante + $gratuite_domicile;
+                $total_visite = $total_payante + $total_gratuite;
+
+                $total_apte_sur_site += $apte_sur_site;
+                $total_inapte_sur_site += $inapte_sur_site;
+                $total_total_payante_sur_site += $total_payante_sur_site;
+                $total_gratuite_sur_site += $gratuite_sur_site;
+                $total_total_sur_site += $total_sur_site;
+                $total_apte_itinerante += $apte_itinerante;
+                $total_inapte_itinerante += $inapte_itinerante;
+                $total_total_payante_itinerante += $total_payante_itinerante;
+                $total_gratuite_itinerante += $gratuite_itinerante;
+                $total_total_itinerante += $total_itinerante;
+                $total_apte_domicile += $apte_domicile;
+                $total_inapte_domicile += $inapte_domicile;
+                $total_total_payante_domicile += $total_payante_domicile;
+                $total_gratuite_domicile += $gratuite_domicile;
+                $total_total_domicile += $total_domicile;
+                $total_total_apte += $total_apte;
+                $total_total_inapte += $total_inapte;
+                $total_total_payante += $total_payante;
+                $total_total_gratuite += $total_gratuite;
+                $total_total_visite += $total_visite;
+
+                $statistique = [
+                    'usage' => $lstu->getUsgLibelle(),
+                    'apte_sur_site' => $apte_sur_site,
+                    'inapte_sur_site' => $inapte_sur_site,
+                    'total_payante_sur_site' => $total_payante_sur_site,
+                    'gratuite_sur_site' => $gratuite_sur_site,
+                    'total_sur_site' => $total_sur_site,
+                    'apte_itinerante' => $apte_itinerante,
+                    'inapte_itinerante' => $inapte_itinerante,
+                    'total_payante_itinerante' => $total_payante_itinerante,
+                    'gratuite_itinerante' => $gratuite_itinerante,
+                    'total_itinerante' => $total_itinerante,
+                    'apte_domicile' => $apte_domicile,
+                    'inapte_domicile' => $inapte_domicile,
+                    'total_payante_domicile' => $total_payante_domicile,
+                    'gratuite_domicile' => $gratuite_domicile,
+                    'total_domicile' => $total_domicile,
+                    'total_apte' => $total_apte,
+                    'total_inapte' => $total_inapte,
+                    'total_payante' => $total_payante,
+                    'total_gratuite' => $total_gratuite,
+                    'total_visite' => $total_visite,
+                ];
+                $liste_statistique->add($statistique);
+            }
+            $pdfOptions = new Options();
+            $pdfOptions->set('isRemoteEnabled', true);
+            $pdfOptions->setIsRemoteEnabled(true);
+            $pdfOptions->setIsPhpEnabled(true);
+            $pdfOptions->set('defaultFont', 'Arial');
+            $dompdf = new Dompdf($pdfOptions);
+    
+            $date = new \DateTime();
+            $logo = file_get_contents($this->getParameter('logo').'logo.txt');
+    
+            $dossier = $this->getParameter('dossier_statistique_visite')."/".$centre->getCtrNom().'/'.$date->format('Y').'/'.$date->format('M').'/'.$date->format('d').'/';
+            if (!file_exists($dossier)) {
+                mkdir($dossier, 0777, true);
+            }
+
+            $html = $this->renderView('ct_app_statistique/imprime_statistique_visite.html.twig', [
+                'logo' => $logo,
+                'titre' => $titre,
+                'province' => $centre->getCtProvinceId()->getPrvNom(),
+                'centre' => $centre->getCtrNom(),
+                'user' => $this->getUser(),
+                'ct_visites'=> $liste_statistique,
+                'total_apte_sur_site'=> $total_apte_sur_site,
+                'total_inapte_sur_site'=> $total_inapte_sur_site,
+                'total_total_payante_sur_site'=> $total_total_payante_sur_site,
+                'total_gratuite_sur_site'=> $total_gratuite_sur_site,
+                'total_total_sur_site'=> $total_total_sur_site,
+                'total_apte_itinerante'=> $total_apte_itinerante,
+                'total_inapte_itinerante'=> $total_inapte_itinerante,
+                'total_total_payante_itinerante'=> $total_total_payante_itinerante,
+                'total_gratuite_itinerante'=> $total_gratuite_itinerante,
+                'total_total_itinerante'=> $total_total_itinerante,
+                'total_apte_domicile'=> $total_apte_domicile,
+                'total_inapte_domicile'=> $total_inapte_domicile,
+                'total_total_payante_domicile'=> $total_total_payante_domicile,
+                'total_gratuite_domicile'=> $total_gratuite_domicile,
+                'total_total_domicile'=> $total_total_domicile ,
+                'total_total_apte'=> $total_total_apte,
+                'total_total_inapte'=> $total_total_inapte,
+                'total_total_payante'=> $total_total_payante,
+                'total_total_gratuite'=> $total_total_gratuite,
+                'total_total_visite'=> $total_total_visite,
+            ]);
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'landscape');
+            $dompdf->render();
+            $output = $dompdf->output();
+            $filename = "STATISTIQUE_VISITE_".$centre->getCtrNom().'_'.$date->format('Y_M_d_H_i_s').".pdf";
+            file_put_contents($dossier.$filename, $output);
+            $dompdf->stream("STATISTIQUE_VISITE_".$centre->getCtrNom().'_'.$date->format('Y_M_d_H_i_s').".pdf", [
+                "Attachment" => true,
+            ]);
+        }
+
         $mois = [
             "Janvier" => 1,
             "Février" => 2,
@@ -701,8 +988,263 @@ class CtAppSatistiqueController extends AbstractController
     /**
      * @Route("/statistique_constatation", name="app_ct_app_statistique_statistique_constatation")
      */
-    public function StatistiqueConstatation(Request $request): Response
+    public function StatistiqueConstatation(Request $request, CtConstAvDedRepository $ctConstAvDedRepository, CtCentreRepository $ctCentreRepository): Response
     {
+        $centre = new CtCentre();
+        $titre = "";
+        $date_effective = "";
+        $mois_effective = "";
+        $trimeste_effective = "";
+        $semestre_effective = "";
+        $annee_effective = "";
+
+        $mois_texte = [
+            1 => "Janvier",
+            2 => "Février",
+            3 => "Mars",
+            4 => "Avril",
+            5 => "Mai",
+            6 => "Juin",
+            7 => "Juillet",
+            8 => "Août",
+            9 => "Septembre",
+            10 => "Octobre",
+            11 => "Novembre",
+            12 => "Décembre",
+        ];
+
+        $trimestre_texte = [
+            1 => "1er trimestre",
+            2 => "2ème trimestre",
+            3 => "3ème trimestre",
+            4 => "4ème trimestre",
+        ];
+
+        $semestre_texte = [
+            1 => "1er semestre",
+            2 => "2ème semestre",
+        ];
+
+        if($request->request->get('form')){
+            $rechercheform = $request->request->get('form');
+            if(array_key_exists('mois', $rechercheform)){
+                $mois_effective = $rechercheform['mois'];
+            }
+            if(array_key_exists('trimestre', $rechercheform)){
+                $trimeste_effective = $rechercheform['trimestre'];
+            }
+            if(array_key_exists('semestre', $rechercheform)){
+                $semestre_effective = $rechercheform['semestre'];
+            }
+            if(array_key_exists('annee', $rechercheform)){
+                $annee_effective = $rechercheform['annee'];
+            }
+            $date_effective = $annee_effective;
+            $titre = $date_effective;
+            $centre = $this->getUser()->getCtCentreId();
+            if($rechercheform['ct_centre_id'] != ""){
+                $centre = $ctCentreRepository->findOneBy(["id" => $rechercheform['ct_centre_id']]);
+            } else{
+                $centre = $this->getUser()->getCtCentreId();
+            }
+
+            if($mois_effective != null){
+                $date_effective = $annee_effective.'-'.$mois_effective;
+                $titre = $mois_texte[$mois_effective].' '.$annee_effective;
+            }
+            if($trimeste_effective != null){
+                switch($trimeste_effective){
+                    case 1:
+                        $date_effective = $annee_effective.'-01% OR c.vst_created LIKE %'.$annee_effective.'-02% OR c.vst_created LIKE %'.$annee_effective.'-03';
+                        break;
+
+                    case 2:
+                        $date_effective = $annee_effective.'-04% OR c.vst_created LIKE %'.$annee_effective.'-05% OR c.vst_created LIKE %'.$annee_effective.'-06';
+                        break;
+
+                    case 3:
+                        $date_effective = $annee_effective.'-07% OR c.vst_created LIKE %'.$annee_effective.'-08% OR c.vst_created LIKE %'.$annee_effective.'-09';
+                        break;
+
+                    case 4:
+                        $date_effective = $annee_effective.'-10% OR c.vst_created LIKE %'.$annee_effective.'-11% OR c.vst_created LIKE %'.$annee_effective.'-12';
+                        break;
+                }
+                $titre = $trimestre_texte[$trimeste_effective].' '.$annee_effective;
+            }
+            if($semestre_effective != null){
+                switch($trimeste_effective){
+                    case 1:
+                        $date_effective = $annee_effective.'-01% OR c.vst_created LIKE %'.$annee_effective.'-02% OR c.vst_created LIKE %'.$annee_effective.'-03% OR c.vst_created LIKE %'.$annee_effective.'-04% OR c.vst_created LIKE %'.$annee_effective.'-05% OR c.vst_created LIKE %'.$annee_effective.'-06';
+                        break;
+                    case 2:
+                        $date_effective = $annee_effective.'-07% OR c.vst_created LIKE %'.$annee_effective.'-08% OR c.vst_created LIKE %'.$annee_effective.'-09% OR c.vst_created LIKE %'.$annee_effective.'-10% OR c.vst_created LIKE %'.$annee_effective.'-11% OR c.vst_created LIKE %'.$annee_effective.'-12';
+                        break;
+                }
+                $titre = $semestre_texte[$semestre_effective].' '.$annee_effective;
+            }
+
+            //sur site
+            $total_apte_sur_site = 0;
+            $total_inapte_sur_site = 0;
+            $total_total_payante_sur_site = 0;
+            $total_gratuite_sur_site = 0;
+            $total_total_sur_site = 0;
+            $total_apte_itinerante = 0;
+            $total_inapte_itinerante = 0;
+            $total_total_payante_itinerante = 0;
+            $total_gratuite_itinerante = 0;
+            $total_total_itinerante = 0;
+            $total_apte_domicile = 0;
+            $total_inapte_domicile = 0;
+            $total_total_payante_domicile = 0;
+            $total_gratuite_domicile = 0;
+            $total_total_domicile = 0;
+            $total_total_apte = 0;
+            $total_total_inapte = 0;
+            $total_total_payante = 0;
+            $total_total_gratuite = 0;
+            $total_total_visite = 0;
+
+            $liste_usages = $ctUsageRepository->findAll();
+            $liste_statistique = new ArrayCollection();
+            foreach($liste_usages as $lstu){
+                $apte_sur_site = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [1], [$centre->getId()], [$lstu->getId()], 2);
+                $inapte_sur_site = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [0], [$centre->getId()], [$lstu->getId()], 2);
+                $total_payante_sur_site = $apte_sur_site + $inapte_sur_site;
+                $gratuite_sur_site = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [0, 1], [$centre->getId()], [$lstu->getId()], 1);
+                $total_sur_site = $total_payante_sur_site + $gratuite_sur_site;
+
+                $liste_centre_itinerante = $ctCentreRepository->findBy(["ctr_code" => $centre->getCtrCode()]);
+                $lstctrit = new ArrayCollection();
+                foreach($liste_centre_itinerante as $lstc){
+                    if($centre->getId() != $lstc->getId()){
+                        $lstctrit->add($lstc->getId());
+                    }
+                }
+                $apte_itinerante = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [1], $lstctrit, [$lstu->getId()], 2);
+                $inapte_itinerante = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [0], $lstctrit, [$lstu->getId()], 2);
+                $total_payante_itinerante = $apte_itinerante + $inapte_itinerante;
+                $gratuite_itinerante = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [0, 1], $lstctrit, [$lstu->getId()], 1);
+                $total_itinerante = $total_payante_itinerante + $gratuite_itinerante;
+
+                $liste_centres = $ctCentreRepository->findBy(["ctr_code" => $centre->getCtrCode()]);
+                $lstctrdom = new ArrayCollection();
+                foreach($liste_centres as $lstc){
+                    $lstctrdom->add($lstc->getId());
+                }
+                $apte_domicile = $ctVisiteRepository->findNombreVisitePayante($date_effective, [2], [1], $lstctrdom, [$lstu->getId()], 2);
+                $inapte_domicile = $ctVisiteRepository->findNombreVisitePayante($date_effective, [2], [0], $lstctrdom, [$lstu->getId()], 2);
+                $total_payante_domicile = $apte_domicile + $inapte_domicile;
+                $gratuite_domicile = $ctVisiteRepository->findNombreVisitePayante($date_effective, [2], [0, 1], $lstctrdom, [$lstu->getId()], 1);
+                $total_domicile = $total_payante_domicile + $gratuite_domicile;
+
+                $total_apte = $apte_sur_site + $apte_itinerante + $apte_domicile;
+                $total_inapte = $inapte_sur_site + $inapte_itinerante + $inapte_domicile;
+                $total_payante = $total_apte + $total_inapte;
+                $total_gratuite = $gratuite_sur_site + $gratuite_itinerante + $gratuite_domicile;
+                $total_visite = $total_payante + $total_gratuite;
+
+                $total_apte_sur_site += $apte_sur_site;
+                $total_inapte_sur_site += $inapte_sur_site;
+                $total_total_payante_sur_site += $total_payante_sur_site;
+                $total_gratuite_sur_site += $gratuite_sur_site;
+                $total_total_sur_site += $total_sur_site;
+                $total_apte_itinerante += $apte_itinerante;
+                $total_inapte_itinerante += $inapte_itinerante;
+                $total_total_payante_itinerante += $total_payante_itinerante;
+                $total_gratuite_itinerante += $gratuite_itinerante;
+                $total_total_itinerante += $total_itinerante;
+                $total_apte_domicile += $apte_domicile;
+                $total_inapte_domicile += $inapte_domicile;
+                $total_total_payante_domicile += $total_payante_domicile;
+                $total_gratuite_domicile += $gratuite_domicile;
+                $total_total_domicile += $total_domicile;
+                $total_total_apte += $total_apte;
+                $total_total_inapte += $total_inapte;
+                $total_total_payante += $total_payante;
+                $total_total_gratuite += $total_gratuite;
+                $total_total_visite += $total_visite;
+
+                $statistique = [
+                    'usage' => $lstu->getUsgLibelle(),
+                    'apte_sur_site' => $apte_sur_site,
+                    'inapte_sur_site' => $inapte_sur_site,
+                    'total_payante_sur_site' => $total_payante_sur_site,
+                    'gratuite_sur_site' => $gratuite_sur_site,
+                    'total_sur_site' => $total_sur_site,
+                    'apte_itinerante' => $apte_itinerante,
+                    'inapte_itinerante' => $inapte_itinerante,
+                    'total_payante_itinerante' => $total_payante_itinerante,
+                    'gratuite_itinerante' => $gratuite_itinerante,
+                    'total_itinerante' => $total_itinerante,
+                    'apte_domicile' => $apte_domicile,
+                    'inapte_domicile' => $inapte_domicile,
+                    'total_payante_domicile' => $total_payante_domicile,
+                    'gratuite_domicile' => $gratuite_domicile,
+                    'total_domicile' => $total_domicile,
+                    'total_apte' => $total_apte,
+                    'total_inapte' => $total_inapte,
+                    'total_payante' => $total_payante,
+                    'total_gratuite' => $total_gratuite,
+                    'total_visite' => $total_visite,
+                ];
+                $liste_statistique->add($statistique);
+            }
+            $pdfOptions = new Options();
+            $pdfOptions->set('isRemoteEnabled', true);
+            $pdfOptions->setIsRemoteEnabled(true);
+            $pdfOptions->setIsPhpEnabled(true);
+            $pdfOptions->set('defaultFont', 'Arial');
+            $dompdf = new Dompdf($pdfOptions);
+    
+            $date = new \DateTime();
+            $logo = file_get_contents($this->getParameter('logo').'logo.txt');
+    
+            $dossier = $this->getParameter('dossier_statistique_visite')."/".$centre->getCtrNom().'/'.$date->format('Y').'/'.$date->format('M').'/'.$date->format('d').'/';
+            if (!file_exists($dossier)) {
+                mkdir($dossier, 0777, true);
+            }
+
+            $html = $this->renderView('ct_app_statistique/imprime_statistique_visite.html.twig', [
+                'logo' => $logo,
+                'titre' => $titre,
+                'province' => $centre->getCtProvinceId()->getPrvNom(),
+                'centre' => $centre->getCtrNom(),
+                'user' => $this->getUser(),
+                'ct_visites'=> $liste_statistique,
+                'total_apte_sur_site'=> $total_apte_sur_site,
+                'total_inapte_sur_site'=> $total_inapte_sur_site,
+                'total_total_payante_sur_site'=> $total_total_payante_sur_site,
+                'total_gratuite_sur_site'=> $total_gratuite_sur_site,
+                'total_total_sur_site'=> $total_total_sur_site,
+                'total_apte_itinerante'=> $total_apte_itinerante,
+                'total_inapte_itinerante'=> $total_inapte_itinerante,
+                'total_total_payante_itinerante'=> $total_total_payante_itinerante,
+                'total_gratuite_itinerante'=> $total_gratuite_itinerante,
+                'total_total_itinerante'=> $total_total_itinerante,
+                'total_apte_domicile'=> $total_apte_domicile,
+                'total_inapte_domicile'=> $total_inapte_domicile,
+                'total_total_payante_domicile'=> $total_total_payante_domicile,
+                'total_gratuite_domicile'=> $total_gratuite_domicile,
+                'total_total_domicile'=> $total_total_domicile ,
+                'total_total_apte'=> $total_total_apte,
+                'total_total_inapte'=> $total_total_inapte,
+                'total_total_payante'=> $total_total_payante,
+                'total_total_gratuite'=> $total_total_gratuite,
+                'total_total_visite'=> $total_total_visite,
+            ]);
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'landscape');
+            $dompdf->render();
+            $output = $dompdf->output();
+            $filename = "STATISTIQUE_VISITE_".$centre->getCtrNom().'_'.$date->format('Y_M_d_H_i_s').".pdf";
+            file_put_contents($dossier.$filename, $output);
+            $dompdf->stream("STATISTIQUE_VISITE_".$centre->getCtrNom().'_'.$date->format('Y_M_d_H_i_s').".pdf", [
+                "Attachment" => true,
+            ]);
+        }
+
         $mois = [
             "Janvier" => 1,
             "Février" => 2,
@@ -904,6 +1446,261 @@ class CtAppSatistiqueController extends AbstractController
      */
     public function StatistiqueImprimeTechnique(Request $request): Response
     {
+        $centre = new CtCentre();
+        $titre = "";
+        $date_effective = "";
+        $mois_effective = "";
+        $trimeste_effective = "";
+        $semestre_effective = "";
+        $annee_effective = "";
+
+        $mois_texte = [
+            1 => "Janvier",
+            2 => "Février",
+            3 => "Mars",
+            4 => "Avril",
+            5 => "Mai",
+            6 => "Juin",
+            7 => "Juillet",
+            8 => "Août",
+            9 => "Septembre",
+            10 => "Octobre",
+            11 => "Novembre",
+            12 => "Décembre",
+        ];
+
+        $trimestre_texte = [
+            1 => "1er trimestre",
+            2 => "2ème trimestre",
+            3 => "3ème trimestre",
+            4 => "4ème trimestre",
+        ];
+
+        $semestre_texte = [
+            1 => "1er semestre",
+            2 => "2ème semestre",
+        ];
+
+        if($request->request->get('form')){
+            $rechercheform = $request->request->get('form');
+            if(array_key_exists('mois', $rechercheform)){
+                $mois_effective = $rechercheform['mois'];
+            }
+            if(array_key_exists('trimestre', $rechercheform)){
+                $trimeste_effective = $rechercheform['trimestre'];
+            }
+            if(array_key_exists('semestre', $rechercheform)){
+                $semestre_effective = $rechercheform['semestre'];
+            }
+            if(array_key_exists('annee', $rechercheform)){
+                $annee_effective = $rechercheform['annee'];
+            }
+            $date_effective = $annee_effective;
+            $titre = $date_effective;
+            $centre = $this->getUser()->getCtCentreId();
+            if($rechercheform['ct_centre_id'] != ""){
+                $centre = $ctCentreRepository->findOneBy(["id" => $rechercheform['ct_centre_id']]);
+            } else{
+                $centre = $this->getUser()->getCtCentreId();
+            }
+
+            if($mois_effective != null){
+                $date_effective = $annee_effective.'-'.$mois_effective;
+                $titre = $mois_texte[$mois_effective].' '.$annee_effective;
+            }
+            if($trimeste_effective != null){
+                switch($trimeste_effective){
+                    case 1:
+                        $date_effective = $annee_effective.'-01% OR c.vst_created LIKE %'.$annee_effective.'-02% OR c.vst_created LIKE %'.$annee_effective.'-03';
+                        break;
+
+                    case 2:
+                        $date_effective = $annee_effective.'-04% OR c.vst_created LIKE %'.$annee_effective.'-05% OR c.vst_created LIKE %'.$annee_effective.'-06';
+                        break;
+
+                    case 3:
+                        $date_effective = $annee_effective.'-07% OR c.vst_created LIKE %'.$annee_effective.'-08% OR c.vst_created LIKE %'.$annee_effective.'-09';
+                        break;
+
+                    case 4:
+                        $date_effective = $annee_effective.'-10% OR c.vst_created LIKE %'.$annee_effective.'-11% OR c.vst_created LIKE %'.$annee_effective.'-12';
+                        break;
+                }
+                $titre = $trimestre_texte[$trimeste_effective].' '.$annee_effective;
+            }
+            if($semestre_effective != null){
+                switch($trimeste_effective){
+                    case 1:
+                        $date_effective = $annee_effective.'-01% OR c.vst_created LIKE %'.$annee_effective.'-02% OR c.vst_created LIKE %'.$annee_effective.'-03% OR c.vst_created LIKE %'.$annee_effective.'-04% OR c.vst_created LIKE %'.$annee_effective.'-05% OR c.vst_created LIKE %'.$annee_effective.'-06';
+                        break;
+                    case 2:
+                        $date_effective = $annee_effective.'-07% OR c.vst_created LIKE %'.$annee_effective.'-08% OR c.vst_created LIKE %'.$annee_effective.'-09% OR c.vst_created LIKE %'.$annee_effective.'-10% OR c.vst_created LIKE %'.$annee_effective.'-11% OR c.vst_created LIKE %'.$annee_effective.'-12';
+                        break;
+                }
+                $titre = $semestre_texte[$semestre_effective].' '.$annee_effective;
+            }
+
+            //sur site
+            $total_apte_sur_site = 0;
+            $total_inapte_sur_site = 0;
+            $total_total_payante_sur_site = 0;
+            $total_gratuite_sur_site = 0;
+            $total_total_sur_site = 0;
+            $total_apte_itinerante = 0;
+            $total_inapte_itinerante = 0;
+            $total_total_payante_itinerante = 0;
+            $total_gratuite_itinerante = 0;
+            $total_total_itinerante = 0;
+            $total_apte_domicile = 0;
+            $total_inapte_domicile = 0;
+            $total_total_payante_domicile = 0;
+            $total_gratuite_domicile = 0;
+            $total_total_domicile = 0;
+            $total_total_apte = 0;
+            $total_total_inapte = 0;
+            $total_total_payante = 0;
+            $total_total_gratuite = 0;
+            $total_total_visite = 0;
+
+            $liste_usages = $ctUsageRepository->findAll();
+            $liste_statistique = new ArrayCollection();
+            foreach($liste_usages as $lstu){
+                $apte_sur_site = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [1], [$centre->getId()], [$lstu->getId()], 2);
+                $inapte_sur_site = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [0], [$centre->getId()], [$lstu->getId()], 2);
+                $total_payante_sur_site = $apte_sur_site + $inapte_sur_site;
+                $gratuite_sur_site = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [0, 1], [$centre->getId()], [$lstu->getId()], 1);
+                $total_sur_site = $total_payante_sur_site + $gratuite_sur_site;
+
+                $liste_centre_itinerante = $ctCentreRepository->findBy(["ctr_code" => $centre->getCtrCode()]);
+                $lstctrit = new ArrayCollection();
+                foreach($liste_centre_itinerante as $lstc){
+                    if($centre->getId() != $lstc->getId()){
+                        $lstctrit->add($lstc->getId());
+                    }
+                }
+                $apte_itinerante = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [1], $lstctrit, [$lstu->getId()], 2);
+                $inapte_itinerante = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [0], $lstctrit, [$lstu->getId()], 2);
+                $total_payante_itinerante = $apte_itinerante + $inapte_itinerante;
+                $gratuite_itinerante = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [0, 1], $lstctrit, [$lstu->getId()], 1);
+                $total_itinerante = $total_payante_itinerante + $gratuite_itinerante;
+
+                $liste_centres = $ctCentreRepository->findBy(["ctr_code" => $centre->getCtrCode()]);
+                $lstctrdom = new ArrayCollection();
+                foreach($liste_centres as $lstc){
+                    $lstctrdom->add($lstc->getId());
+                }
+                $apte_domicile = $ctVisiteRepository->findNombreVisitePayante($date_effective, [2], [1], $lstctrdom, [$lstu->getId()], 2);
+                $inapte_domicile = $ctVisiteRepository->findNombreVisitePayante($date_effective, [2], [0], $lstctrdom, [$lstu->getId()], 2);
+                $total_payante_domicile = $apte_domicile + $inapte_domicile;
+                $gratuite_domicile = $ctVisiteRepository->findNombreVisitePayante($date_effective, [2], [0, 1], $lstctrdom, [$lstu->getId()], 1);
+                $total_domicile = $total_payante_domicile + $gratuite_domicile;
+
+                $total_apte = $apte_sur_site + $apte_itinerante + $apte_domicile;
+                $total_inapte = $inapte_sur_site + $inapte_itinerante + $inapte_domicile;
+                $total_payante = $total_apte + $total_inapte;
+                $total_gratuite = $gratuite_sur_site + $gratuite_itinerante + $gratuite_domicile;
+                $total_visite = $total_payante + $total_gratuite;
+
+                $total_apte_sur_site += $apte_sur_site;
+                $total_inapte_sur_site += $inapte_sur_site;
+                $total_total_payante_sur_site += $total_payante_sur_site;
+                $total_gratuite_sur_site += $gratuite_sur_site;
+                $total_total_sur_site += $total_sur_site;
+                $total_apte_itinerante += $apte_itinerante;
+                $total_inapte_itinerante += $inapte_itinerante;
+                $total_total_payante_itinerante += $total_payante_itinerante;
+                $total_gratuite_itinerante += $gratuite_itinerante;
+                $total_total_itinerante += $total_itinerante;
+                $total_apte_domicile += $apte_domicile;
+                $total_inapte_domicile += $inapte_domicile;
+                $total_total_payante_domicile += $total_payante_domicile;
+                $total_gratuite_domicile += $gratuite_domicile;
+                $total_total_domicile += $total_domicile;
+                $total_total_apte += $total_apte;
+                $total_total_inapte += $total_inapte;
+                $total_total_payante += $total_payante;
+                $total_total_gratuite += $total_gratuite;
+                $total_total_visite += $total_visite;
+
+                $statistique = [
+                    'usage' => $lstu->getUsgLibelle(),
+                    'apte_sur_site' => $apte_sur_site,
+                    'inapte_sur_site' => $inapte_sur_site,
+                    'total_payante_sur_site' => $total_payante_sur_site,
+                    'gratuite_sur_site' => $gratuite_sur_site,
+                    'total_sur_site' => $total_sur_site,
+                    'apte_itinerante' => $apte_itinerante,
+                    'inapte_itinerante' => $inapte_itinerante,
+                    'total_payante_itinerante' => $total_payante_itinerante,
+                    'gratuite_itinerante' => $gratuite_itinerante,
+                    'total_itinerante' => $total_itinerante,
+                    'apte_domicile' => $apte_domicile,
+                    'inapte_domicile' => $inapte_domicile,
+                    'total_payante_domicile' => $total_payante_domicile,
+                    'gratuite_domicile' => $gratuite_domicile,
+                    'total_domicile' => $total_domicile,
+                    'total_apte' => $total_apte,
+                    'total_inapte' => $total_inapte,
+                    'total_payante' => $total_payante,
+                    'total_gratuite' => $total_gratuite,
+                    'total_visite' => $total_visite,
+                ];
+                $liste_statistique->add($statistique);
+            }
+            $pdfOptions = new Options();
+            $pdfOptions->set('isRemoteEnabled', true);
+            $pdfOptions->setIsRemoteEnabled(true);
+            $pdfOptions->setIsPhpEnabled(true);
+            $pdfOptions->set('defaultFont', 'Arial');
+            $dompdf = new Dompdf($pdfOptions);
+    
+            $date = new \DateTime();
+            $logo = file_get_contents($this->getParameter('logo').'logo.txt');
+    
+            $dossier = $this->getParameter('dossier_statistique_visite')."/".$centre->getCtrNom().'/'.$date->format('Y').'/'.$date->format('M').'/'.$date->format('d').'/';
+            if (!file_exists($dossier)) {
+                mkdir($dossier, 0777, true);
+            }
+
+            $html = $this->renderView('ct_app_statistique/imprime_statistique_visite.html.twig', [
+                'logo' => $logo,
+                'titre' => $titre,
+                'province' => $centre->getCtProvinceId()->getPrvNom(),
+                'centre' => $centre->getCtrNom(),
+                'user' => $this->getUser(),
+                'ct_visites'=> $liste_statistique,
+                'total_apte_sur_site'=> $total_apte_sur_site,
+                'total_inapte_sur_site'=> $total_inapte_sur_site,
+                'total_total_payante_sur_site'=> $total_total_payante_sur_site,
+                'total_gratuite_sur_site'=> $total_gratuite_sur_site,
+                'total_total_sur_site'=> $total_total_sur_site,
+                'total_apte_itinerante'=> $total_apte_itinerante,
+                'total_inapte_itinerante'=> $total_inapte_itinerante,
+                'total_total_payante_itinerante'=> $total_total_payante_itinerante,
+                'total_gratuite_itinerante'=> $total_gratuite_itinerante,
+                'total_total_itinerante'=> $total_total_itinerante,
+                'total_apte_domicile'=> $total_apte_domicile,
+                'total_inapte_domicile'=> $total_inapte_domicile,
+                'total_total_payante_domicile'=> $total_total_payante_domicile,
+                'total_gratuite_domicile'=> $total_gratuite_domicile,
+                'total_total_domicile'=> $total_total_domicile ,
+                'total_total_apte'=> $total_total_apte,
+                'total_total_inapte'=> $total_total_inapte,
+                'total_total_payante'=> $total_total_payante,
+                'total_total_gratuite'=> $total_total_gratuite,
+                'total_total_visite'=> $total_total_visite,
+            ]);
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'landscape');
+            $dompdf->render();
+            $output = $dompdf->output();
+            $filename = "STATISTIQUE_VISITE_".$centre->getCtrNom().'_'.$date->format('Y_M_d_H_i_s').".pdf";
+            file_put_contents($dossier.$filename, $output);
+            $dompdf->stream("STATISTIQUE_VISITE_".$centre->getCtrNom().'_'.$date->format('Y_M_d_H_i_s').".pdf", [
+                "Attachment" => true,
+            ]);
+        }
+
         $mois = [
             "Janvier" => 1,
             "Février" => 2,
@@ -1105,6 +1902,261 @@ class CtAppSatistiqueController extends AbstractController
      */
     public function StatistiqueAutreService(Request $request): Response
     {
+        $centre = new CtCentre();
+        $titre = "";
+        $date_effective = "";
+        $mois_effective = "";
+        $trimeste_effective = "";
+        $semestre_effective = "";
+        $annee_effective = "";
+
+        $mois_texte = [
+            1 => "Janvier",
+            2 => "Février",
+            3 => "Mars",
+            4 => "Avril",
+            5 => "Mai",
+            6 => "Juin",
+            7 => "Juillet",
+            8 => "Août",
+            9 => "Septembre",
+            10 => "Octobre",
+            11 => "Novembre",
+            12 => "Décembre",
+        ];
+
+        $trimestre_texte = [
+            1 => "1er trimestre",
+            2 => "2ème trimestre",
+            3 => "3ème trimestre",
+            4 => "4ème trimestre",
+        ];
+
+        $semestre_texte = [
+            1 => "1er semestre",
+            2 => "2ème semestre",
+        ];
+
+        if($request->request->get('form')){
+            $rechercheform = $request->request->get('form');
+            if(array_key_exists('mois', $rechercheform)){
+                $mois_effective = $rechercheform['mois'];
+            }
+            if(array_key_exists('trimestre', $rechercheform)){
+                $trimeste_effective = $rechercheform['trimestre'];
+            }
+            if(array_key_exists('semestre', $rechercheform)){
+                $semestre_effective = $rechercheform['semestre'];
+            }
+            if(array_key_exists('annee', $rechercheform)){
+                $annee_effective = $rechercheform['annee'];
+            }
+            $date_effective = $annee_effective;
+            $titre = $date_effective;
+            $centre = $this->getUser()->getCtCentreId();
+            if($rechercheform['ct_centre_id'] != ""){
+                $centre = $ctCentreRepository->findOneBy(["id" => $rechercheform['ct_centre_id']]);
+            } else{
+                $centre = $this->getUser()->getCtCentreId();
+            }
+
+            if($mois_effective != null){
+                $date_effective = $annee_effective.'-'.$mois_effective;
+                $titre = $mois_texte[$mois_effective].' '.$annee_effective;
+            }
+            if($trimeste_effective != null){
+                switch($trimeste_effective){
+                    case 1:
+                        $date_effective = $annee_effective.'-01% OR c.vst_created LIKE %'.$annee_effective.'-02% OR c.vst_created LIKE %'.$annee_effective.'-03';
+                        break;
+
+                    case 2:
+                        $date_effective = $annee_effective.'-04% OR c.vst_created LIKE %'.$annee_effective.'-05% OR c.vst_created LIKE %'.$annee_effective.'-06';
+                        break;
+
+                    case 3:
+                        $date_effective = $annee_effective.'-07% OR c.vst_created LIKE %'.$annee_effective.'-08% OR c.vst_created LIKE %'.$annee_effective.'-09';
+                        break;
+
+                    case 4:
+                        $date_effective = $annee_effective.'-10% OR c.vst_created LIKE %'.$annee_effective.'-11% OR c.vst_created LIKE %'.$annee_effective.'-12';
+                        break;
+                }
+                $titre = $trimestre_texte[$trimeste_effective].' '.$annee_effective;
+            }
+            if($semestre_effective != null){
+                switch($trimeste_effective){
+                    case 1:
+                        $date_effective = $annee_effective.'-01% OR c.vst_created LIKE %'.$annee_effective.'-02% OR c.vst_created LIKE %'.$annee_effective.'-03% OR c.vst_created LIKE %'.$annee_effective.'-04% OR c.vst_created LIKE %'.$annee_effective.'-05% OR c.vst_created LIKE %'.$annee_effective.'-06';
+                        break;
+                    case 2:
+                        $date_effective = $annee_effective.'-07% OR c.vst_created LIKE %'.$annee_effective.'-08% OR c.vst_created LIKE %'.$annee_effective.'-09% OR c.vst_created LIKE %'.$annee_effective.'-10% OR c.vst_created LIKE %'.$annee_effective.'-11% OR c.vst_created LIKE %'.$annee_effective.'-12';
+                        break;
+                }
+                $titre = $semestre_texte[$semestre_effective].' '.$annee_effective;
+            }
+
+            //sur site
+            $total_apte_sur_site = 0;
+            $total_inapte_sur_site = 0;
+            $total_total_payante_sur_site = 0;
+            $total_gratuite_sur_site = 0;
+            $total_total_sur_site = 0;
+            $total_apte_itinerante = 0;
+            $total_inapte_itinerante = 0;
+            $total_total_payante_itinerante = 0;
+            $total_gratuite_itinerante = 0;
+            $total_total_itinerante = 0;
+            $total_apte_domicile = 0;
+            $total_inapte_domicile = 0;
+            $total_total_payante_domicile = 0;
+            $total_gratuite_domicile = 0;
+            $total_total_domicile = 0;
+            $total_total_apte = 0;
+            $total_total_inapte = 0;
+            $total_total_payante = 0;
+            $total_total_gratuite = 0;
+            $total_total_visite = 0;
+
+            $liste_usages = $ctUsageRepository->findAll();
+            $liste_statistique = new ArrayCollection();
+            foreach($liste_usages as $lstu){
+                $apte_sur_site = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [1], [$centre->getId()], [$lstu->getId()], 2);
+                $inapte_sur_site = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [0], [$centre->getId()], [$lstu->getId()], 2);
+                $total_payante_sur_site = $apte_sur_site + $inapte_sur_site;
+                $gratuite_sur_site = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [0, 1], [$centre->getId()], [$lstu->getId()], 1);
+                $total_sur_site = $total_payante_sur_site + $gratuite_sur_site;
+
+                $liste_centre_itinerante = $ctCentreRepository->findBy(["ctr_code" => $centre->getCtrCode()]);
+                $lstctrit = new ArrayCollection();
+                foreach($liste_centre_itinerante as $lstc){
+                    if($centre->getId() != $lstc->getId()){
+                        $lstctrit->add($lstc->getId());
+                    }
+                }
+                $apte_itinerante = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [1], $lstctrit, [$lstu->getId()], 2);
+                $inapte_itinerante = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [0], $lstctrit, [$lstu->getId()], 2);
+                $total_payante_itinerante = $apte_itinerante + $inapte_itinerante;
+                $gratuite_itinerante = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [0, 1], $lstctrit, [$lstu->getId()], 1);
+                $total_itinerante = $total_payante_itinerante + $gratuite_itinerante;
+
+                $liste_centres = $ctCentreRepository->findBy(["ctr_code" => $centre->getCtrCode()]);
+                $lstctrdom = new ArrayCollection();
+                foreach($liste_centres as $lstc){
+                    $lstctrdom->add($lstc->getId());
+                }
+                $apte_domicile = $ctVisiteRepository->findNombreVisitePayante($date_effective, [2], [1], $lstctrdom, [$lstu->getId()], 2);
+                $inapte_domicile = $ctVisiteRepository->findNombreVisitePayante($date_effective, [2], [0], $lstctrdom, [$lstu->getId()], 2);
+                $total_payante_domicile = $apte_domicile + $inapte_domicile;
+                $gratuite_domicile = $ctVisiteRepository->findNombreVisitePayante($date_effective, [2], [0, 1], $lstctrdom, [$lstu->getId()], 1);
+                $total_domicile = $total_payante_domicile + $gratuite_domicile;
+
+                $total_apte = $apte_sur_site + $apte_itinerante + $apte_domicile;
+                $total_inapte = $inapte_sur_site + $inapte_itinerante + $inapte_domicile;
+                $total_payante = $total_apte + $total_inapte;
+                $total_gratuite = $gratuite_sur_site + $gratuite_itinerante + $gratuite_domicile;
+                $total_visite = $total_payante + $total_gratuite;
+
+                $total_apte_sur_site += $apte_sur_site;
+                $total_inapte_sur_site += $inapte_sur_site;
+                $total_total_payante_sur_site += $total_payante_sur_site;
+                $total_gratuite_sur_site += $gratuite_sur_site;
+                $total_total_sur_site += $total_sur_site;
+                $total_apte_itinerante += $apte_itinerante;
+                $total_inapte_itinerante += $inapte_itinerante;
+                $total_total_payante_itinerante += $total_payante_itinerante;
+                $total_gratuite_itinerante += $gratuite_itinerante;
+                $total_total_itinerante += $total_itinerante;
+                $total_apte_domicile += $apte_domicile;
+                $total_inapte_domicile += $inapte_domicile;
+                $total_total_payante_domicile += $total_payante_domicile;
+                $total_gratuite_domicile += $gratuite_domicile;
+                $total_total_domicile += $total_domicile;
+                $total_total_apte += $total_apte;
+                $total_total_inapte += $total_inapte;
+                $total_total_payante += $total_payante;
+                $total_total_gratuite += $total_gratuite;
+                $total_total_visite += $total_visite;
+
+                $statistique = [
+                    'usage' => $lstu->getUsgLibelle(),
+                    'apte_sur_site' => $apte_sur_site,
+                    'inapte_sur_site' => $inapte_sur_site,
+                    'total_payante_sur_site' => $total_payante_sur_site,
+                    'gratuite_sur_site' => $gratuite_sur_site,
+                    'total_sur_site' => $total_sur_site,
+                    'apte_itinerante' => $apte_itinerante,
+                    'inapte_itinerante' => $inapte_itinerante,
+                    'total_payante_itinerante' => $total_payante_itinerante,
+                    'gratuite_itinerante' => $gratuite_itinerante,
+                    'total_itinerante' => $total_itinerante,
+                    'apte_domicile' => $apte_domicile,
+                    'inapte_domicile' => $inapte_domicile,
+                    'total_payante_domicile' => $total_payante_domicile,
+                    'gratuite_domicile' => $gratuite_domicile,
+                    'total_domicile' => $total_domicile,
+                    'total_apte' => $total_apte,
+                    'total_inapte' => $total_inapte,
+                    'total_payante' => $total_payante,
+                    'total_gratuite' => $total_gratuite,
+                    'total_visite' => $total_visite,
+                ];
+                $liste_statistique->add($statistique);
+            }
+            $pdfOptions = new Options();
+            $pdfOptions->set('isRemoteEnabled', true);
+            $pdfOptions->setIsRemoteEnabled(true);
+            $pdfOptions->setIsPhpEnabled(true);
+            $pdfOptions->set('defaultFont', 'Arial');
+            $dompdf = new Dompdf($pdfOptions);
+    
+            $date = new \DateTime();
+            $logo = file_get_contents($this->getParameter('logo').'logo.txt');
+    
+            $dossier = $this->getParameter('dossier_statistique_visite')."/".$centre->getCtrNom().'/'.$date->format('Y').'/'.$date->format('M').'/'.$date->format('d').'/';
+            if (!file_exists($dossier)) {
+                mkdir($dossier, 0777, true);
+            }
+
+            $html = $this->renderView('ct_app_statistique/imprime_statistique_visite.html.twig', [
+                'logo' => $logo,
+                'titre' => $titre,
+                'province' => $centre->getCtProvinceId()->getPrvNom(),
+                'centre' => $centre->getCtrNom(),
+                'user' => $this->getUser(),
+                'ct_visites'=> $liste_statistique,
+                'total_apte_sur_site'=> $total_apte_sur_site,
+                'total_inapte_sur_site'=> $total_inapte_sur_site,
+                'total_total_payante_sur_site'=> $total_total_payante_sur_site,
+                'total_gratuite_sur_site'=> $total_gratuite_sur_site,
+                'total_total_sur_site'=> $total_total_sur_site,
+                'total_apte_itinerante'=> $total_apte_itinerante,
+                'total_inapte_itinerante'=> $total_inapte_itinerante,
+                'total_total_payante_itinerante'=> $total_total_payante_itinerante,
+                'total_gratuite_itinerante'=> $total_gratuite_itinerante,
+                'total_total_itinerante'=> $total_total_itinerante,
+                'total_apte_domicile'=> $total_apte_domicile,
+                'total_inapte_domicile'=> $total_inapte_domicile,
+                'total_total_payante_domicile'=> $total_total_payante_domicile,
+                'total_gratuite_domicile'=> $total_gratuite_domicile,
+                'total_total_domicile'=> $total_total_domicile ,
+                'total_total_apte'=> $total_total_apte,
+                'total_total_inapte'=> $total_total_inapte,
+                'total_total_payante'=> $total_total_payante,
+                'total_total_gratuite'=> $total_total_gratuite,
+                'total_total_visite'=> $total_total_visite,
+            ]);
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'landscape');
+            $dompdf->render();
+            $output = $dompdf->output();
+            $filename = "STATISTIQUE_VISITE_".$centre->getCtrNom().'_'.$date->format('Y_M_d_H_i_s').".pdf";
+            file_put_contents($dossier.$filename, $output);
+            $dompdf->stream("STATISTIQUE_VISITE_".$centre->getCtrNom().'_'.$date->format('Y_M_d_H_i_s').".pdf", [
+                "Attachment" => true,
+            ]);
+        }
+
         $mois = [
             "Janvier" => 1,
             "Février" => 2,

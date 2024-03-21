@@ -65,7 +65,7 @@
         <table align="center" style="border: 2px solid black;border-collapse: collapse;">
             {% set cellule = "20px" %}
             <tr align="center">
-                <td align="center" valign="middle" rowspan="2" width="45px" style="border: 1px solid black;border-collapse: collapse;"><strong><i>MOTIF</i></strong></td>
+                <td align="center" valign="middle" rowspan="2" width="200px" style="border: 1px solid black;border-collapse: collapse;"><strong><i>MOTIF</i></strong></td>
                 <td align="center" valign="middle" colspan="3" style="border: 1px solid black;border-collapse: collapse;"><strong><i>CONSTATATION</i></strong></td>
                 <td align="center" valign="middle" colspan="3" style="border: 1px solid black;border-collapse: collapse;"><strong><i>CONSTATATION ITINERANTE</i></strong></td>
             </tr>
@@ -94,9 +94,7 @@
             {% endfor %}
         </table>
         <br>
-        <br>
         <div style="font-size:14px;margin-left:600px;" align="center">
-            <br><br>
             {{ province }}, le {{ "now"|date('d') }} {{ trans_day_hash["now"|date('F')] }} {{ "now"|date('Y') }}<br>
             <strong>Le chef de Centre<strong>
         </div>

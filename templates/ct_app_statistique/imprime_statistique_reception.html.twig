@@ -65,10 +65,11 @@
         <table align="center" style="border: 2px solid black;border-collapse: collapse;">
             {% set cellule = "20px" %}
             <tr align="center">
-                <td align="center" valign="middle" rowspan="2" width="50px" style="border: 1px solid black;border-collapse: collapse;"><strong><i>MOTIF</i></strong></td>
+                <td align="center" valign="middle" rowspan="2" width="200px" style="border: 1px solid black;border-collapse: collapse;"><strong><i>MOTIF</i></strong></td>
                 <td align="center" valign="middle" colspan="3" style="border: 1px solid black;border-collapse: collapse;"><strong><i>RECEPTION ISOLE</i></strong></td>
                 <td align="center" valign="middle" colspan="3" style="border: 1px solid black;border-collapse: collapse;"><strong><i>RECEPTION PAR TYPE</i></strong></td>
                 <td align="center" valign="middle" colspan="3" style="border: 1px solid black;border-collapse: collapse;"><strong><i>RECEPTION ITINERANTE</i></strong></td>
+                <td align="center" valign="middle" colspan="3" style="border: 1px solid black;border-collapse: collapse;"><strong><i>RECEPTION TOTAL</i></strong></td>
             </tr>
             <tr align="center">
                 <td align="center" valign="middle" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Payante</i></strong></td>
@@ -76,6 +77,9 @@
                 <td align="center" valign="middle" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Total</i></strong></td>
                 <td align="center" valign="middle" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Payante</i></strong></td>
                 <td align="center" valign="middle" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Gratuite</i></strong></td>
+                <td align="center" valign="middle" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Total</i></strong></td>
+                <td align="center" valign="middle" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Payante</i></strong></td>
+                <td align="center" valign="middle" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Gratuit</i></strong></td>
                 <td align="center" valign="middle" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Total</i></strong></td>
                 <td align="center" valign="middle" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Payante</i></strong></td>
                 <td align="center" valign="middle" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Gratuit</i></strong></td>
@@ -93,17 +97,33 @@
                     <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_reception. }}</td>
                     <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_reception. }}</td>
                     <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_reception. }}</td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_reception. }}</td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_reception. }}</td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_reception. }}</td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="10">Aucun enregistrement trouvé</td>
+                    <td colspan="13">Aucun enregistrement trouvé</td>
                 </tr>
             {% endfor %}
+            <tr style="font-size:10px;">
+                <td align="left" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ ct_reception. }}</strong></td>
+                <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_reception. }}</td>
+                <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_reception. }}</td>
+                <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_reception. }}</td>
+                <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_reception. }}</td>
+                <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_reception. }}</td>
+                <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_reception. }}</td>
+                <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_reception. }}</td>
+                <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_reception. }}</td>
+                <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_reception. }}</td>
+                <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_reception. }}</td>
+                <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_reception. }}</td>
+                <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_reception. }}</td>
+            </tr>
         </table>
         <br>
-        <br>
         <div style="font-size:14px;margin-left:600px;" align="center">
-            <br><br>
             {{ province }}, le {{ "now"|date('d') }} {{ trans_day_hash["now"|date('F')] }} {{ "now"|date('Y') }}<br>
             <strong>Le chef de Centre<strong>
         </div>

@@ -63,12 +63,13 @@
         </table>
         <div align="center" style="font-size:14px;"><u><H3>STATISTIQUE VISITE TECHNIQUE {{ centre }} : {{ titre }}</H3></u></div>
         <table align="center" style="border: 2px solid black;border-collapse: collapse;">
-            {% set cellule = "50px" %}
+            {% set cellule = "40px" %}
             <tr align="center">
                 <td align="center" valign="middle" rowspan="2" width="200px" style="border: 1px solid black;border-collapse: collapse;"><strong><i>USAGE</i></strong></td>
                 <td align="center" valign="middle" colspan="5" style="border: 1px solid black;border-collapse: collapse;"><strong><i>VISITE SUR SITE</i></strong></td>
                 <td align="center" valign="middle" colspan="5" style="border: 1px solid black;border-collapse: collapse;"><strong><i>VISITE ITINERANTE</i></strong></td>
                 <td align="center" valign="middle" colspan="5" style="border: 1px solid black;border-collapse: collapse;"><strong><i>VISITE A DOMICILE</i></strong></td>
+                <td align="center" valign="middle" colspan="5" style="border: 1px solid black;border-collapse: collapse;"><strong><i>VISITE TOTAL</i></strong></td>
             </tr>
             <tr align="center">
                 <td align="center" valign="middle" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Apte</i></strong></td>
@@ -80,6 +81,11 @@
                 <td align="center" valign="middle" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Inapte</i></strong></td>
                 <td align="center" valign="middle" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Payante</i></strong></td>
                 <td align="center" valign="middle" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Gratuite</i></strong></td>
+                <td align="center" valign="middle" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Total</i></strong></td>
+                <td align="center" valign="middle" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Apte</i></strong></td>
+                <td align="center" valign="middle" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Inapte</i></strong></td>
+                <td align="center" valign="middle" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Payante</i></strong></td>
+                <td align="center" valign="middle" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Gratuit</i></strong></td>
                 <td align="center" valign="middle" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Total</i></strong></td>
                 <td align="center" valign="middle" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Apte</i></strong></td>
                 <td align="center" valign="middle" width="{{ cellule }}" style="border: 1px solid black;border-collapse: collapse;"><strong><i>Inapte</i></strong></td>
@@ -105,10 +111,15 @@
                     <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite.total_payante_domicile }}</td>
                     <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite.gratuite_domicile }}</td>
                     <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite.total_domicile }}</td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite.total_apte }}</td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite.total_inapte }}</td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite.total_payante }}</td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite.total_gratuite }}</td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;">{{ ct_visite.total_visite }}</td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="16">Aucun enregistrement trouvé</td>
+                    <td colspan="21">Aucun enregistrement trouvé</td>
                 </tr>
             {% endfor %}
                 <tr style="font-size:14px;">
@@ -128,6 +139,11 @@
                     <td align="right" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ total_total_payante_domicile }}</strong></td>
                     <td align="right" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ total_gratuite_domicile }}</strong></td>
                     <td align="right" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ total_total_domicile }}</strong></td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ total_total_apte }}</strong></td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ total_total_inapte }}</strong></td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ total_total_payante }}</strong></td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ total_total_gratuite }}</strong></td>
+                    <td align="right" style="border: 1px solid black;border-collapse: collapse;"><strong>{{ total_total_visite }}</strong></td>
                 </tr>
         </table>
         <br>
