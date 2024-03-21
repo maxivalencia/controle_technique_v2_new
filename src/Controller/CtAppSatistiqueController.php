@@ -8,6 +8,8 @@ use App\Repository\CtConstAvDedRepository;
 use App\Repository\CtConstAvDedCaracRepository;
 use App\Repository\CtConstAvDedTypeRepository;
 use App\Repository\CtVisiteRepository;
+use App\Repository\CtMotifRepository;
+use App\Repository\CtGenreCategoryRepository;
 use App\Repository\CtVisiteExtraRepository;
 use App\Repository\CtVisiteExtraTarifRepository;
 use App\Repository\CtTypeDroitPTACRepository;
@@ -42,6 +44,7 @@ use App\Entity\CtGenreCategorie;
 use App\Entity\CtVisite;
 use App\Entity\CtMarque;
 use App\Entity\CtUser;
+use App\Repository\CtGenreCategorieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -532,7 +535,7 @@ class CtAppSatistiqueController extends AbstractController
     /**
      * @Route("/statistique_reception", name="app_ct_app_statistique_statistique_reception")
      */
-    public function StatistiqueReception(Request $request, CtReceptionRepository $ctReceptionRepository, CtCentreRepository $ctCentreRepository): Response
+    public function StatistiqueReception(Request $request, CtDroitPTACRepository $ctDroitPTACRepository, CtGenreCategorieRepository $ctGenreCategorieRepository, CtMotifRepository $ctMotifRepository, CtReceptionRepository $ctReceptionRepository, CtCentreRepository $ctCentreRepository): Response
     {
         $centre = new CtCentre();
         $titre = "";
@@ -629,111 +632,67 @@ class CtAppSatistiqueController extends AbstractController
             }
 
             //sur site
-            $total_apte_sur_site = 0;
-            $total_inapte_sur_site = 0;
-            $total_total_payante_sur_site = 0;
-            $total_gratuite_sur_site = 0;
-            $total_total_sur_site = 0;
-            $total_apte_itinerante = 0;
-            $total_inapte_itinerante = 0;
-            $total_total_payante_itinerante = 0;
+            $total_payante_isole = 0;
+            $total_gratuite_isole= 0;
+            $total_total_isole = 0;
+            $total_payante_par_type = 0;
+            $total_gratuite_par_type = 0;
+            $total_total_par_type = 0;
+            $total_payante_itinerante = 0;
             $total_gratuite_itinerante = 0;
             $total_total_itinerante = 0;
-            $total_apte_domicile = 0;
-            $total_inapte_domicile = 0;
-            $total_total_payante_domicile = 0;
-            $total_gratuite_domicile = 0;
-            $total_total_domicile = 0;
-            $total_total_apte = 0;
-            $total_total_inapte = 0;
             $total_total_payante = 0;
             $total_total_gratuite = 0;
-            $total_total_visite = 0;
+            $total_total_reception = 0;
 
-            $liste_usages = $ctUsageRepository->findAll();
+            $liste_motifs = $ctMotifRepository->findAll();
             $liste_statistique = new ArrayCollection();
-            foreach($liste_usages as $lstu){
-                $apte_sur_site = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [1], [$centre->getId()], [$lstu->getId()], 2);
-                $inapte_sur_site = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [0], [$centre->getId()], [$lstu->getId()], 2);
-                $total_payante_sur_site = $apte_sur_site + $inapte_sur_site;
-                $gratuite_sur_site = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [0, 1], [$centre->getId()], [$lstu->getId()], 1);
-                $total_sur_site = $total_payante_sur_site + $gratuite_sur_site;
+            foreach($liste_motifs as $lstm){
+                if($lstm->isMtfIsCalculable()){
+                    $motif = $lstm->getMtfLibelle();
+                }else{
+                    $motif = $lstm->getMtfLibelle();
+                    $isole_payante = $ctReceptionRepository->findNombreReceptionPayante($date_effective, [1], $lstm->getId(), [$centre->getId()], 1);
+                    $isole_gratuite = $ctReceptionRepository->findNombreReceptionPayante($date_effective, [1], $lstm->getId(), [$centre->getId()], 2);
+                    $isole_total = $isole_payante + $isole_gratuite;
 
-                $liste_centre_itinerante = $ctCentreRepository->findBy(["ctr_code" => $centre->getCtrCode()]);
-                $lstctrit = new ArrayCollection();
-                foreach($liste_centre_itinerante as $lstc){
-                    if($centre->getId() != $lstc->getId()){
-                        $lstctrit->add($lstc->getId());
+                    $par_type_payante = $ctReceptionRepository->findNombreReceptionPayante($date_effective, [2], $lstm->getId(), [$centre->getId()], 1);
+                    $par_type_gratuite = $ctReceptionRepository->findNombreReceptionPayante($date_effective, [2], $lstm->getId(), [$centre->getId()], 2);
+                    $par_type_total = $par_type_payante + $par_type_gratuite;
+
+                    $liste_centre_itinerante = $ctCentreRepository->findBy(["ctr_code" => $centre->getCtrCode()]);
+                    $lstctrit = new ArrayCollection();
+                    foreach($liste_centre_itinerante as $lstc){
+                        if($centre->getId() != $lstc->getId()){
+                            $lstctrit->add($lstc->getId());
+                        }
                     }
+                    $itinerante_payante = $ctReceptionRepository->findNombreReceptionPayante($date_effective, [2], $lstm->getId(), $lstctrit, 1);
+                    $itinerante_gratuite = $ctReceptionRepository->findNombreReceptionPayante($date_effective, [2], $lstm->getId(), $lstctrit, 2);
+                    $itinerante_total = $itinerante_payante + $itinerante_gratuite;
+
+                    $total_payante = $isole_payante + $par_type_payante + $itinerante_payante;
+                    $total_gratuite = $isole_gratuite + $par_type_gratuite + $itinerante_gratuite;
+                    $total_total = $total_payante + $total_gratuite;
+
+
+                    $statistique = [
+                        'motif' => $motif,
+                        'isole_payante' => $isole_payante,
+                        'isole_gratuite' => $isole_gratuite,
+                        'isole_total' => $isole_total,
+                        'par_type_payante' => $par_type_payante,
+                        'par_type_gratuite' => $par_type_gratuite,
+                        'par_type_total' => $par_type_total,
+                        'itinerante_payante' => $itinerante_payante,
+                        'itinerante_gratuite' => $itinerante_gratuite,
+                        'itinerante_total' => $itinerante_total,
+                        'total_payante' => $total_payante,
+                        'total_gratuite' => $total_gratuite,
+                        'total_total' => $total_total,
+                    ];
+                    $liste_statistique->add($statistique);
                 }
-                $apte_itinerante = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [1], $lstctrit, [$lstu->getId()], 2);
-                $inapte_itinerante = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [0], $lstctrit, [$lstu->getId()], 2);
-                $total_payante_itinerante = $apte_itinerante + $inapte_itinerante;
-                $gratuite_itinerante = $ctVisiteRepository->findNombreVisitePayante($date_effective, [1], [0, 1], $lstctrit, [$lstu->getId()], 1);
-                $total_itinerante = $total_payante_itinerante + $gratuite_itinerante;
-
-                $liste_centres = $ctCentreRepository->findBy(["ctr_code" => $centre->getCtrCode()]);
-                $lstctrdom = new ArrayCollection();
-                foreach($liste_centres as $lstc){
-                    $lstctrdom->add($lstc->getId());
-                }
-                $apte_domicile = $ctVisiteRepository->findNombreVisitePayante($date_effective, [2], [1], $lstctrdom, [$lstu->getId()], 2);
-                $inapte_domicile = $ctVisiteRepository->findNombreVisitePayante($date_effective, [2], [0], $lstctrdom, [$lstu->getId()], 2);
-                $total_payante_domicile = $apte_domicile + $inapte_domicile;
-                $gratuite_domicile = $ctVisiteRepository->findNombreVisitePayante($date_effective, [2], [0, 1], $lstctrdom, [$lstu->getId()], 1);
-                $total_domicile = $total_payante_domicile + $gratuite_domicile;
-
-                $total_apte = $apte_sur_site + $apte_itinerante + $apte_domicile;
-                $total_inapte = $inapte_sur_site + $inapte_itinerante + $inapte_domicile;
-                $total_payante = $total_apte + $total_inapte;
-                $total_gratuite = $gratuite_sur_site + $gratuite_itinerante + $gratuite_domicile;
-                $total_visite = $total_payante + $total_gratuite;
-
-                $total_apte_sur_site += $apte_sur_site;
-                $total_inapte_sur_site += $inapte_sur_site;
-                $total_total_payante_sur_site += $total_payante_sur_site;
-                $total_gratuite_sur_site += $gratuite_sur_site;
-                $total_total_sur_site += $total_sur_site;
-                $total_apte_itinerante += $apte_itinerante;
-                $total_inapte_itinerante += $inapte_itinerante;
-                $total_total_payante_itinerante += $total_payante_itinerante;
-                $total_gratuite_itinerante += $gratuite_itinerante;
-                $total_total_itinerante += $total_itinerante;
-                $total_apte_domicile += $apte_domicile;
-                $total_inapte_domicile += $inapte_domicile;
-                $total_total_payante_domicile += $total_payante_domicile;
-                $total_gratuite_domicile += $gratuite_domicile;
-                $total_total_domicile += $total_domicile;
-                $total_total_apte += $total_apte;
-                $total_total_inapte += $total_inapte;
-                $total_total_payante += $total_payante;
-                $total_total_gratuite += $total_gratuite;
-                $total_total_visite += $total_visite;
-
-                $statistique = [
-                    'usage' => $lstu->getUsgLibelle(),
-                    'apte_sur_site' => $apte_sur_site,
-                    'inapte_sur_site' => $inapte_sur_site,
-                    'total_payante_sur_site' => $total_payante_sur_site,
-                    'gratuite_sur_site' => $gratuite_sur_site,
-                    'total_sur_site' => $total_sur_site,
-                    'apte_itinerante' => $apte_itinerante,
-                    'inapte_itinerante' => $inapte_itinerante,
-                    'total_payante_itinerante' => $total_payante_itinerante,
-                    'gratuite_itinerante' => $gratuite_itinerante,
-                    'total_itinerante' => $total_itinerante,
-                    'apte_domicile' => $apte_domicile,
-                    'inapte_domicile' => $inapte_domicile,
-                    'total_payante_domicile' => $total_payante_domicile,
-                    'gratuite_domicile' => $gratuite_domicile,
-                    'total_domicile' => $total_domicile,
-                    'total_apte' => $total_apte,
-                    'total_inapte' => $total_inapte,
-                    'total_payante' => $total_payante,
-                    'total_gratuite' => $total_gratuite,
-                    'total_visite' => $total_visite,
-                ];
-                $liste_statistique->add($statistique);
             }
             $pdfOptions = new Options();
             $pdfOptions->set('isRemoteEnabled', true);
@@ -756,7 +715,7 @@ class CtAppSatistiqueController extends AbstractController
                 'province' => $centre->getCtProvinceId()->getPrvNom(),
                 'centre' => $centre->getCtrNom(),
                 'user' => $this->getUser(),
-                'ct_visites'=> $liste_statistique,
+                'ct_receptions'=> $liste_statistique,
                 'total_apte_sur_site'=> $total_apte_sur_site,
                 'total_inapte_sur_site'=> $total_inapte_sur_site,
                 'total_total_payante_sur_site'=> $total_total_payante_sur_site,

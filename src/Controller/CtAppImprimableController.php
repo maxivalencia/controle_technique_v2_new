@@ -331,7 +331,7 @@ class CtAppImprimableController extends AbstractController
                         //$typeDroit = $ctTypeDroitPTACRepository->findOneBy(["tp_dp_libelle" => "Réception"]);
                         $typeDroit = $ctTypeDroitPTACRepository->findOneBy(["id" => 1]);
                         $droits = $ctDroitPTACRepository->findBy(["ct_genre_categorie_id" => $genreCategorie->getId(), "ct_type_droit_ptac_id" => $typeDroit->getId(), "ct_type_reception_id" => $type_reception_id], ["ct_arrete_prix_id" => "DESC", "dp_prix_max" => "DESC"]);
-                        if($droit == null){                        
+                        if($droits == null){
                             $droits = $ctDroitPTACRepository->findBy(["ct_genre_categorie_id" => $genreCategorie->getId(), "ct_type_droit_ptac_id" => $typeDroit->getId()], ["ct_arrete_prix_id" => "DESC", "dp_prix_max" => "DESC"]);
                         }
                         //$droits = $ctDroitPTACRepository->findDroitValide($genreCategorie->getId(), $typeDroit->getId(), $liste->getCtVehiculeId()->getVhcPoidsTotalCharge());

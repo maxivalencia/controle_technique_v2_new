@@ -98,4 +98,27 @@ class CtReceptionRepository extends ServiceEntityRepository
             //->getOneOrNullResult()
         ;
     }
+
+    public function findNombreReceptionPayante($date, $type, $motif, $centre, $utilisation): ?int
+    {
+        return $this->createQueryBuilder('c')
+            ->select('COUNT(c) ')
+            ->andWhere('c.rcp_created LIKE :val1')
+            ->andWhere('c.rcp_is_active = :val2')
+            ->andWhere('c.rcp_is_active IN (:val3)')
+            ->andWhere('c.rcp_is_active = :val4')
+            ->andWhere('c.rcp_is_active IN (:val5)')
+            ->andWhere('c.rcp_is_active = :val6')
+            ->setParameter('val1', '%'.$date.'%')
+            ->setParameter('val2', 1)
+            ->setParameter('val3', $type)
+            ->setParameter('val4', $motif)
+            ->setParameter('val5', $centre)
+            ->setParameter('val6', $utilisation)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleScalarResult()
+            //->getOneOrNullResult()
+        ;
+    }
 }
